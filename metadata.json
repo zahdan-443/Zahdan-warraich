@@ -2,7 +2,5 @@
   "name": "Al-Hadi Goods",
   "description": "Road Freight Toolkit for trip cost calculation, fleet management, driver directories, saved routes, and verification portals.",
   "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

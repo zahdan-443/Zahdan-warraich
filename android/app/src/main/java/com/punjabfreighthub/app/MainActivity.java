@@ -1,4 +1,4 @@
-package com.alhadigoods.app;
+package com.punjabfreighthub.app;
 
 import com.getcapacitor.BridgeActivity;
 

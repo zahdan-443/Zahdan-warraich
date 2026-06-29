@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Al-Hadi Goods</string>
-    <string name="title_activity_main">Al-Hadi Goods</string>
-    <string name="package_name">com.alhadigoods.app</string>
-    <string name="custom_url_scheme">com.alhadigoods.app</string>
+    <string name="app_name">Road Freight Hub</string>
+    <string name="title_activity_main">Road Freight Hub</string>
+    <string name="package_name">com.punjabfreighthub.app</string>
+    <string name="custom_url_scheme">com.punjabfreighthub.app</string>
 </resources>
