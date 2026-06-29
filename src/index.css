@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-urdu: "Noto Nastaliq Urdu", serif;
+  
+  --color-nat-bg: #fdfbf7;
+  --color-nat-text: #4a4a35;
+  --color-nat-accent: #8b9d77;
+  --color-nat-accent-dark: #5a5a40;
+  --color-nat-accent-hover: #4a4a35;
+  --color-nat-surface: #ffffff;
+  --color-nat-surface-subtle: #f0f0e4;
+  --color-nat-surface-soft: #f9f9f2;
+  --color-nat-border: #ecece0;
+  --color-nat-border-dark: #e2e2d5;
+  --color-nat-muted: #8e8e75;
+}
+
+body.urdu {
+  font-family: var(--font-urdu);
+  direction: rtl;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
