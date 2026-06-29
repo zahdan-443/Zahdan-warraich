@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Globe, LogIn, LogOut, Bell, Wifi, WifiOff, RefreshCw, Shield, Users, CheckCheck, X, Crown, Truck, Briefcase } from 'lucide-react';
 import { DICTIONARY, Language, AppNotification, UserRole } from '../types';
+import { AlHadiLogo } from './AlHadiLogo';
 
 interface HeaderProps {
   lang: Language;
@@ -52,11 +53,11 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <header className="h-20 px-4 sm:px-8 md:px-12 flex items-center justify-between border-b border-[#e2e2d5] bg-[#fdfbf7] sticky top-0 z-50 transition-all shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#8b9d77] rounded-full flex items-center justify-center text-white font-serif italic text-xl shadow-sm select-none overflow-hidden border border-[#7a8c66] shrink-0">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm select-none shrink-0">
             {!logoErr ? (
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" onError={() => setLogoErr(true)} />
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover rounded-full" onError={() => setLogoErr(true)} />
             ) : (
-              <span>AG</span>
+              <AlHadiLogo className="w-10 h-10" />
             )}
           </div>
           <div className="hidden xs:block">

@@ -229,7 +229,13 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#fdfbf7] text-[#4a4a35] flex flex-col font-sans pb-16 md:pb-0">
       {showSplash && (
-        <SplashScreen onDismiss={() => setShowSplash(false)} />
+        <SplashScreen
+          onDismiss={() => setShowSplash(false)}
+          onSelectTab={(tab) => {
+            setActiveTab(tab);
+            setShowSplash(false);
+          }}
+        />
       )}
 
       <Header
