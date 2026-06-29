@@ -1,12 +1,12 @@
-# Simple workflow for deploying static React/Vite content to GitHub Pages
+# Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
 on:
-  # Runs on pushes targeting the default branch (main or master)
+  # Runs on pushes targeting the default branch
   push:
-    branches: ["main", "master"]
+    branches: ["main"]
 
-  # Allows you to run this workflow manually from the Actions tab on GitHub
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -22,40 +22,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job
+  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci || npm install
-
-      - name: Build application
-        run: npm run build
-        env:
-          # If you use Gemini API keys or other secrets, add them in GitHub Repository Settings -> Secrets and variables -> Actions
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload the Vite build output folder
-          path: './dist'
-
+          # Upload entire repository
+          path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
+        
