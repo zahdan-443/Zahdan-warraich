@@ -1,51 +1,50 @@
-name: Build Android APK
+name: Build Al-Hadi Goods APK
 
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
-  build-apk:
-    name: Build Android APK
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build Web Application
-        run: npm run build
-
-      - name: Sync Capacitor Android Project
-        run: npx cap sync android
-
-      - name: Set up Java JDK 17
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
           distribution: 'temurin'
+          java-version: '17'
 
-      - name: Grant execute permission for gradlew
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Capacitor CLI globally
+        run: npm install -g @capacitor/cli
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Copy web files to Android
+        run: npx cap copy android
+
+      - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      - name: Build APK (Assemble Debug)
-        working-directory: ./android
-        run: ./gradlew assembleDebug
+      - name: Build Debug APK
+        run: cd android && ./gradlew assembleDebug --no-daemon
 
-      - name: Upload APK Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: RoadFreightHub-Android-APK
+          name: AlHadi-Goods-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
