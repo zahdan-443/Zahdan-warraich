@@ -18,6 +18,16 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Setup Android SDK & Accept Licenses
+        uses: android-actions/setup-android@v3
+
+      - name: Automatically Accept All SDK Licenses
+        run: |
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -44,7 +54,7 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK as Downloadable Artifact
         uses: actions/upload-artifact@v4
