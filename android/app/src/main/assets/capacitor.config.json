@@ -1,0 +1,8 @@
+{
+	"appId": "com.alhadigoods.app",
+	"appName": "Al-Hadi Goods",
+	"webDir": "dist",
+	"server": {
+		"androidScheme": "https"
+	}
+}
