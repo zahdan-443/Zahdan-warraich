@@ -39,8 +39,9 @@ jobs:
       - name: Generate Gradle Wrapper
         run: |
           mkdir -p /tmp/gradle-wrapper-temp
+          touch /tmp/gradle-wrapper-temp/settings.gradle
           cd /tmp/gradle-wrapper-temp
-          gradle wrapper --gradle-version 8.14.3
+          gradle wrapper --gradle-version 8.14.3 --distribution-type all
           cd -
           mkdir -p android/gradle/wrapper
           cp /tmp/gradle-wrapper-temp/gradle/wrapper/gradle-wrapper.jar android/gradle/wrapper/gradle-wrapper.jar
