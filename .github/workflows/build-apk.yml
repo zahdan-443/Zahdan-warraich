@@ -36,8 +36,8 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
-      - name: Copy web files to Android
-        run: npx cap copy android
+      - name: Sync Capacitor (full sync, not just copy)
+        run: npx cap sync android
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
