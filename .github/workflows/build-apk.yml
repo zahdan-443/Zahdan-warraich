@@ -24,6 +24,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Patch Capacitor AGP Version
+        run: |
+          find node_modules/ -name "build.gradle" -exec sed -i 's/8.13.0/8.7.3/g' {} +
+
       - name: Build Web Application
         run: npm run build
 
@@ -41,7 +45,7 @@ jobs:
           mkdir -p /tmp/gradle-wrapper-temp
           touch /tmp/gradle-wrapper-temp/settings.gradle
           cd /tmp/gradle-wrapper-temp
-          gradle wrapper --gradle-version 8.12.1 --distribution-type all
+          gradle wrapper --gradle-version 8.10.2 --distribution-type all
           cd -
           mkdir -p android/gradle/wrapper
           cp /tmp/gradle-wrapper-temp/gradle/wrapper/gradle-wrapper.jar android/gradle/wrapper/gradle-wrapper.jar
