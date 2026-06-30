@@ -25,10 +25,10 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
-        run: npm install
+        run: rm -rf node_modules package-lock.json && npm install
 
       - name: Install Capacitor CLI globally
-        run: npm install -g @capacitor/cli
+        run: npm install -g @capacitor/cli@5.7.0
 
       - name: Remove old android folder if exists
         run: rm -rf android
