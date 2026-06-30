@@ -12,7 +12,7 @@ export const AlHadiLogo: React.FC<AlHadiLogoProps> = ({ className = "w-32 h-32",
 
   useEffect(() => {
     const img = new Image();
-    img.src = '/logo.png';
+    img.src = 'logo.png';
     img.onload = () => {
       setHasCustomImg(true);
       setImgChecked(true);
@@ -26,7 +26,7 @@ export const AlHadiLogo: React.FC<AlHadiLogoProps> = ({ className = "w-32 h-32",
   if (hasCustomImg) {
     return (
       <div className={`relative rounded-full overflow-hidden shadow-xl border-2 border-[#c59b27] bg-white flex items-center justify-center ${className}`}>
-        <img src="/logo.png" alt="Al-Hadi Goods Logo" className="w-full h-full object-cover" />
+        <img src="logo.png" alt="Al-Hadi Goods Logo" className="w-full h-full object-cover" />
       </div>
     );
   }

@@ -1,9 +1,0 @@
-{
-  "appId": "com.alhadi.goods",
-  "appName": "Al-Hadi Goods",
-  "webDir": "www",
-  "bundledWebRuntime": false,
-  "android": {
-    "allowMixedContent": true
-  }
-}

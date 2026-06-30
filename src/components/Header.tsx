@@ -55,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm select-none shrink-0">
             {!logoErr ? (
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover rounded-full" onError={() => setLogoErr(true)} />
+              <img src="logo.png" alt="Logo" className="w-full h-full object-cover rounded-full" onError={() => setLogoErr(true)} />
             ) : (
               <AlHadiLogo className="w-10 h-10" />
             )}
