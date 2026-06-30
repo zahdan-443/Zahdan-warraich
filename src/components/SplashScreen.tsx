@@ -39,43 +39,31 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onDismiss, onSelectT
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#f8f9fc] text-[#162a4d] flex flex-col items-center justify-between p-6 sm:p-8 select-none overflow-y-auto font-sans">
+    <div className="fixed inset-0 z-[100] bg-[#f8f9fc] text-[#162a4d] flex flex-col items-center justify-between p-4 sm:p-6 select-none overflow-hidden font-sans">
       
-      {/* Top Right Dismiss Button */}
-      <div className="w-full max-w-md flex justify-end shrink-0 pt-2">
-        <button
-          onClick={onDismiss}
-          className="p-2 rounded-full bg-slate-200/70 hover:bg-slate-300 text-slate-600 transition-colors cursor-pointer flex items-center gap-1 text-xs px-3 font-mono uppercase"
-          title="Skip to Dashboard"
-        >
-          <span>Skip</span>
-          <X className="w-3.5 h-3.5" />
-        </button>
-      </div>
-
       {/* Main Content Area Matching input_file_1.png */}
-      <div className="my-auto flex flex-col items-center text-center w-full max-w-md py-4 space-y-4">
+      <div className="my-auto flex flex-col items-center text-center w-full max-w-sm sm:max-w-md py-2 space-y-3">
         
         {/* Emblem Logo */}
         <div className="animate-in fade-in zoom-in-95 duration-500">
-          <AlHadiLogo className="w-48 h-48 sm:w-56 sm:h-56 mx-auto" />
+          <AlHadiLogo className="w-28 h-28 sm:w-36 sm:h-36 mx-auto" />
         </div>
 
         {/* Horizontal Decorative Separator Pill */}
-        <div className="w-56 sm:w-64 h-3 sm:h-3.5 bg-gradient-to-r from-[#c59b27] via-[#162a4d] to-[#0b162a] rounded-full shadow-md my-2 animate-pulse" />
+        <div className="w-40 sm:w-48 h-2 sm:h-2.5 bg-gradient-to-r from-[#c59b27] via-[#162a4d] to-[#0b162a] rounded-full shadow-md my-1 animate-pulse" />
 
         {/* Title Typography */}
-        <div className="space-y-1">
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-[#b58b28] tracking-tight">
+        <div className="space-y-0.5">
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#b58b28] tracking-tight">
             Al-Hadi Goods
           </h1>
-          <h2 className="text-4xl sm:text-5xl font-serif font-bold text-[#162a4d]">
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#162a4d]">
             الحادی گڈز
           </h2>
         </div>
 
         {/* 4 Prominent Menu Action Cards */}
-        <div className="w-full space-y-3 pt-4">
+        <div className="w-full space-y-2 pt-2">
           
           {/* Card 1: Vehicle Trip Calculator */}
           <div

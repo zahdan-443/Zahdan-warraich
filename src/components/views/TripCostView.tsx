@@ -30,7 +30,7 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
   const [mileage, setMileage] = useState<string>(initialMileage ? initialMileage.toString() : '9');
   const [distance, setDistance] = useState<string>('350');
   const [toll, setToll] = useState<string>('1200');
-  const [loading, setLoading] = useState<string>('1500');
+  const [loading, setLoading] = useState<string>('0');
   const [driverAllow, setDriverAllow] = useState<string>('2000');
   const [other, setOther] = useState<string>('0');
   const [isReturn, setIsReturn] = useState<boolean>(false);
@@ -127,7 +127,7 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
       `🛢️ Est. Fuel Used: ${trip.consumed} L\n` +
       `💰 Fuel Cost: ${fmt(trip.fuelCost)}\n` +
       `🛣️ Motorway Toll: ${fmt(trip.toll)}\n` +
-      `📦 Labor: ${fmt(trip.loading)}\n` +
+      (trip.loading > 0 ? `📦 Labor: ${fmt(trip.loading)}\n` : '') +
       `👤 Driver Allowance: ${fmt(trip.driver)}\n` +
       `➕ Other: ${fmt(trip.other)}\n\n` +
       `✅ *Total Expense: ${fmt(trip.total)}*\n` +
@@ -169,10 +169,10 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
           </div>
 
           {/* Subtab Switcher */}
-          <div className="flex items-center gap-2 p-1.5 bg-[#fdfbf7] rounded-full border border-[#ecece0] self-start sm:self-auto">
+          <div className="flex items-center gap-1 sm:gap-2 p-1 bg-[#fdfbf7] rounded-full border border-[#ecece0] w-full sm:w-auto justify-between sm:justify-start">
             <button
               onClick={() => setActiveSubTab('calc')}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs uppercase tracking-wider font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-all cursor-pointer flex-1 sm:flex-none ${
                 activeSubTab === 'calc'
                   ? 'bg-[#8b9d77] text-white shadow-xs'
                   : 'text-[#8e8e75] hover:text-[#4a4a35]'
@@ -184,7 +184,7 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
 
             <button
               onClick={() => setActiveSubTab('history')}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs uppercase tracking-wider font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-all cursor-pointer flex-1 sm:flex-none ${
                 activeSubTab === 'history'
                   ? 'bg-[#8b9d77] text-white shadow-xs'
                   : 'text-[#8e8e75] hover:text-[#4a4a35]'
@@ -196,7 +196,7 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
 
             <button
               onClick={() => setActiveSubTab('summary')}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs uppercase tracking-wider font-bold transition-all cursor-pointer ${
+              className={`flex items-center justify-center gap-1 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-all cursor-pointer flex-1 sm:flex-none ${
                 activeSubTab === 'summary'
                   ? 'bg-[#8b9d77] text-white shadow-xs'
                   : 'text-[#8e8e75] hover:text-[#4a4a35]'
@@ -292,7 +292,7 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
                   {t.routeExtras}
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-[#8e8e75] mb-1.5">
                       {t.toll}
@@ -306,21 +306,6 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-[#8e8e75] mb-1.5">
-                      {t.loading}
-                    </label>
-                    <input
-                      type="number"
-                      value={loading}
-                      onChange={(e) => setLoading(e.target.value)}
-                      placeholder="1500"
-                      className="w-full bg-white border border-[#ecece0] rounded-xl px-3.5 py-2.5 text-sm font-semibold text-[#4a4a35] focus:border-[#8b9d77] focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-[#8e8e75] mb-1.5">
                       {t.driverAllowance}
@@ -432,10 +417,12 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
                         <span className="font-mono font-semibold text-[#4a4a35]">PKR {lastCalc.toll.toLocaleString()}</span>
                       </div>
 
-                      <div className="flex justify-between items-center text-[#8e8e75]">
-                        <span>Loading Labor:</span>
-                        <span className="font-mono font-semibold text-[#4a4a35]">PKR {lastCalc.loading.toLocaleString()}</span>
-                      </div>
+                      {lastCalc.loading > 0 && (
+                        <div className="flex justify-between items-center text-[#8e8e75]">
+                          <span>Loading Labor:</span>
+                          <span className="font-mono font-semibold text-[#4a4a35]">PKR {lastCalc.loading.toLocaleString()}</span>
+                        </div>
+                      )}
 
                       <div className="flex justify-between items-center text-[#8e8e75]">
                         <span>Driver Allowance:</span>
