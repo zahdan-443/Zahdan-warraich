@@ -300,30 +300,32 @@ export default function App() {
         />
       )}
 
-      <Header
-        lang={lang}
-        onToggleLang={() => setLang(lang === 'en' ? 'ur' : 'en')}
-        userEmail={userEmail}
-        onSignIn={handleSignIn}
-        onSignOut={handleSignOut}
-        role={role}
-        onSelectRole={handleRoleChange}
-        notifications={notifications}
-        onMarkAllRead={handleMarkAllRead}
-        offlineCount={offlineQueue.length}
-        isOffline={isOffline}
-        onToggleOffline={handleToggleOffline}
-        onSyncOffline={handleSyncOffline}
-        isDashboard={activeTab === 'home'}
-        showTopMenuExternal={showTopMenu}
-        onOpenTopMenu={() => {
-          window.history.pushState({ modal: true }, '');
-          setShowTopMenu(true);
-        }}
-        onCloseTopMenu={() => setShowTopMenu(false)}
-      />
+      {activeTab !== 'calculator' && (
+        <Header
+          lang={lang}
+          onToggleLang={() => setLang(lang === 'en' ? 'ur' : 'en')}
+          userEmail={userEmail}
+          onSignIn={handleSignIn}
+          onSignOut={handleSignOut}
+          role={role}
+          onSelectRole={handleRoleChange}
+          notifications={notifications}
+          onMarkAllRead={handleMarkAllRead}
+          offlineCount={offlineQueue.length}
+          isOffline={isOffline}
+          onToggleOffline={handleToggleOffline}
+          onSyncOffline={handleSyncOffline}
+          isDashboard={activeTab === 'home'}
+          showTopMenuExternal={showTopMenu}
+          onOpenTopMenu={() => {
+            window.history.pushState({ modal: true }, '');
+            setShowTopMenu(true);
+          }}
+          onCloseTopMenu={() => setShowTopMenu(false)}
+        />
+      )}
 
-      {activeTab !== 'home' && (
+      {activeTab !== 'home' && activeTab !== 'calculator' && (
         <Navigation
           activeTab={activeTab}
           onSelectTab={handleNavigate}
