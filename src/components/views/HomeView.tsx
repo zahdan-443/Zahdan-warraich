@@ -52,17 +52,19 @@ const QuickActionButton: React.FC<{
   fullName: string;
   subtitle?: string;
   highlight?: boolean;
-}> = ({ onClick, imgSrc, fallbackIcon, fullName, subtitle, highlight }) => {
+}> = ({ onClick, imgSrc, fallbackIcon, fullName, highlight }) => {
   const [imgError, setImgError] = useState(false);
 
   return (
     <button
       onClick={onClick}
-      className={`p-3.5 sm:p-5 bg-[#fdfbf7] border ${
+      title={fullName}
+      aria-label={fullName}
+      className={`p-2 sm:p-3.5 bg-[#fdfbf7] border ${
         highlight ? 'border-2 border-[#8b9d77]/60' : 'border-[#ecece0]'
-      } hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center text-center gap-2.5 sm:gap-3.5 shadow-2xs group`}
+      } hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center justify-center shadow-2xs group aspect-square w-full`}
     >
-      <div className="w-16 h-16 sm:w-20 sm:h-20 p-2 sm:p-2.5 bg-white rounded-2xl sm:rounded-3xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-xs flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 overflow-hidden">
+      <div className="w-full h-full p-1.5 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-xs flex items-center justify-center transition-transform group-hover:scale-105 overflow-hidden">
         {!imgError ? (
           <img
             src={imgSrc}
@@ -73,16 +75,6 @@ const QuickActionButton: React.FC<{
         ) : (
           <div className="w-full h-full flex items-center justify-center text-[#8b9d77]">
             {fallbackIcon}
-          </div>
-        )}
-      </div>
-      <div className="min-w-0 w-full px-1">
-        <div className="font-serif font-bold text-xs sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight">
-          {fullName}
-        </div>
-        {subtitle && (
-          <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-1 leading-tight line-clamp-1">
-            {subtitle}
           </div>
         )}
       </div>
@@ -366,7 +358,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
         
         {/* First Section: 2 Rows of 3 Operational & Portal Buttons */}
         <div className="bg-white p-4 sm:p-7 rounded-[36px] shadow-sm border border-[#ecece0]">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
             {/* Row 1, Button 1: Trip Calculator */}
             <QuickActionButton
               onClick={() => onNavigate('calculator')}
