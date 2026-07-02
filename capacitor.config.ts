@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.punjabfreighthub.app',
-  appName: 'Road Freight Hub',
+  appName: 'Al-Hadi Goods',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

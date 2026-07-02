@@ -45,6 +45,51 @@ interface CalendarEvent {
   status: 'pending' | 'active' | 'completed';
 }
 
+const QuickActionButton: React.FC<{
+  onClick: () => void;
+  imgSrc: string;
+  fallbackIcon: React.ReactNode;
+  fullName: string;
+  subtitle?: string;
+  highlight?: boolean;
+}> = ({ onClick, imgSrc, fallbackIcon, fullName, subtitle, highlight }) => {
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <button
+      onClick={onClick}
+      className={`p-3.5 sm:p-5 bg-[#fdfbf7] border ${
+        highlight ? 'border-2 border-[#8b9d77]/60' : 'border-[#ecece0]'
+      } hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center text-center gap-2.5 sm:gap-3.5 shadow-2xs group`}
+    >
+      <div className="w-16 h-16 sm:w-20 sm:h-20 p-2 sm:p-2.5 bg-white rounded-2xl sm:rounded-3xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-xs flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 overflow-hidden">
+        {!imgError ? (
+          <img
+            src={imgSrc}
+            alt={fullName}
+            className="w-full h-full object-contain"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-[#8b9d77]">
+            {fallbackIcon}
+          </div>
+        )}
+      </div>
+      <div className="min-w-0 w-full px-1">
+        <div className="font-serif font-bold text-xs sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight">
+          {fullName}
+        </div>
+        {subtitle && (
+          <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-1 leading-tight line-clamp-1">
+            {subtitle}
+          </div>
+        )}
+      </div>
+    </button>
+  );
+};
+
 export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drivers, onNavigate, onOpenMenu }) => {
   const t = DICTIONARY[lang];
   const [showRecentLogs, setShowRecentLogs] = useState(false);
@@ -321,114 +366,62 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
         
         {/* First Section: 2 Rows of 3 Operational & Portal Buttons */}
         <div className="bg-white p-4 sm:p-7 rounded-[36px] shadow-sm border border-[#ecece0]">
-          <div className="grid grid-cols-3 gap-2 sm:gap-3.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {/* Row 1, Button 1: Trip Calculator */}
-            <button
+            <QuickActionButton
               onClick={() => onNavigate('calculator')}
-              className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
-            >
-              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <Calculator className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
-              </div>
-              <div className="min-w-0">
-                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'سفر کیلکولیٹر' : 'Trip Calculator'}
-                </div>
-                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'کرایہ اور فیول منافع کا تخمینہ' : 'Freight cost & profit estimate'}
-                </div>
-              </div>
-            </button>
+              imgSrc="/trip-icon.png"
+              fallbackIcon={<Calculator className="w-8 h-8 sm:w-10 sm:h-10 text-[#8b9d77]" />}
+              fullName={lang === 'ur' ? 'سفر اخراجات کیلکولیٹر' : 'Trip Expense Calculator'}
+              subtitle={lang === 'ur' ? 'کرایہ اور فیول منافع کا تخمینہ' : 'Freight cost & profit estimate'}
+            />
 
             {/* Row 1, Button 2: Vehicles Verification */}
-            <button
+            <QuickActionButton
               onClick={() => window.open('https://mtmis.excise.punjab.gov.pk/', '_blank', 'noopener,noreferrer')}
-              className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
-            >
-              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
-              </div>
-              <div className="min-w-0">
-                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'گاڑیوں کی تصدیق' : 'Vehicles Verification'}
-                </div>
-                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'MTMIS پنجاب و ایکسائز ریکارڈ' : 'MTMIS Punjab & Excise portal'}
-                </div>
-              </div>
-            </button>
+              imgSrc="/vehicle-icon.png"
+              fallbackIcon={<Truck className="w-8 h-8 sm:w-10 sm:h-10 text-[#8b9d77]" />}
+              fullName={lang === 'ur' ? 'گاڑیوں کی تصدیق (MTMIS)' : 'Vehicles Verification'}
+              subtitle={lang === 'ur' ? 'MTMIS پنجاب و ایکسائز ریکارڈ' : 'MTMIS Punjab & Excise portal'}
+            />
 
             {/* Row 1, Button 3: License Verification */}
-            <button
+            <QuickActionButton
               onClick={() => window.open('https://dlims.punjab.gov.pk/verify', '_blank', 'noopener,noreferrer')}
-              className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
-            >
-              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
-              </div>
-              <div className="min-w-0">
-                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'لائسنس کی تصدیق' : 'License Verification'}
-                </div>
-                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'DLIMS پنجاب و موٹروے پولیس' : 'DLIMS Punjab Highway checks'}
-                </div>
-              </div>
-            </button>
+              imgSrc="/license-icon.png"
+              fallbackIcon={<ShieldCheck className="w-8 h-8 sm:w-10 sm:h-10 text-[#8b9d77]" />}
+              fullName={lang === 'ur' ? 'لائسنس کی تصدیق (DLIMS)' : 'License Verification'}
+              subtitle={lang === 'ur' ? 'DLIMS پنجاب و موٹروے پولیس' : 'DLIMS Punjab Highway checks'}
+            />
 
             {/* Row 2, Button 1: E-Challan Check */}
-            <button
+            <QuickActionButton
               onClick={() => window.open('https://echallan.psca.gop.pk/', '_blank', 'noopener,noreferrer')}
-              className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
-            >
-              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
-              </div>
-              <div className="min-w-0">
-                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'ای چالان چیک کریں' : 'E-Challan Check'}
-                </div>
-                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'PSCA سیف سٹی چالان ریکارڈ' : 'PSCA Safe City traffic records'}
-                </div>
-              </div>
-            </button>
+              imgSrc="/echallan-icon.png"
+              fallbackIcon={<AlertTriangle className="w-8 h-8 sm:w-10 sm:h-10 text-[#8b9d77]" />}
+              fullName={lang === 'ur' ? 'ای چالان چیکنگ (PSCA)' : 'E-Challan Checking'}
+              subtitle={lang === 'ur' ? 'PSCA سیف سٹی چالان ریکارڈ' : 'PSCA Safe City traffic records'}
+            />
 
             {/* Row 2, Button 2: Safar Diary */}
-            <button
+            <QuickActionButton
               onClick={() => openModalWithHistory(setShowSafarDiaryModal)}
-              className="p-2.5 sm:p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
-            >
-              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
-              </div>
-              <div className="min-w-0">
-                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'سفر ڈائری' : 'Safar Diary'}
-                </div>
-                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'روزانہ ٹرپ اور اخراجات کا ریکارڈ' : 'Daily trip & expense logs'}
-                </div>
-              </div>
-            </button>
+              imgSrc="/safar-diary-icon.png"
+              fallbackIcon={<BookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-[#8b9d77]" />}
+              fullName={lang === 'ur' ? 'سفر ڈائری لاگز' : 'Safar Diary Logs'}
+              subtitle={lang === 'ur' ? 'روزانہ ٹرپ اور اخراجات کا ریکارڈ' : 'Daily trip & expense logs'}
+              highlight={true}
+            />
 
             {/* Row 2, Button 3: Quick Operations */}
-            <button
+            <QuickActionButton
               onClick={() => openModalWithHistory(setShowQuickOpsModal)}
-              className="p-2.5 sm:p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
-            >
-              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
-              </div>
-              <div className="min-w-0">
-                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'کوئیک آپریشنز' : 'Quick Operations'}
-                </div>
-                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
-                  {lang === 'ur' ? 'گاڑیاں، ڈرائیورز اور پورٹلز' : 'Fleet tools & portal shortcuts'}
-                </div>
-              </div>
-            </button>
+              imgSrc="/quick-ops-icon.png"
+              fallbackIcon={<Wrench className="w-8 h-8 sm:w-10 sm:h-10 text-[#8b9d77]" />}
+              fullName={lang === 'ur' ? 'کوئیک آپریشنز پورٹل' : 'Quick Operations Portal'}
+              subtitle={lang === 'ur' ? 'گاڑیاں، ڈرائیورز اور پورٹلز' : 'Fleet tools & shortcuts'}
+              highlight={true}
+            />
           </div>
         </div>
 
