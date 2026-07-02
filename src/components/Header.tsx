@@ -46,20 +46,23 @@ export const Header: React.FC<HeaderProps> = ({
   const [logoErr, setLogoErr] = useState(false);
   const [showNotifs, setShowNotifs] = useState(false);
   const [internalShowTopMenu, setInternalShowTopMenu] = useState(false);
-  const [themePref, setThemePref] = useState<'light' | 'dark' | 'system'>('light');
+  const [themePref, setThemePref] = useState<'light' | 'dark' | 'system' | 'emerald' | 'desert' | 'navy'>('light');
 
   React.useEffect(() => {
     const root = document.documentElement;
+    root.classList.remove('dark', 'theme-emerald', 'theme-desert', 'theme-navy');
     if (themePref === 'dark') {
       root.classList.add('dark');
-    } else if (themePref === 'light') {
-      root.classList.remove('dark');
-    } else {
+    } else if (themePref === 'emerald') {
+      root.classList.add('theme-emerald');
+    } else if (themePref === 'desert') {
+      root.classList.add('theme-desert');
+    } else if (themePref === 'navy') {
+      root.classList.add('theme-navy');
+    } else if (themePref === 'system') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (prefersDark) {
         root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
       }
     }
   }, [themePref]);
@@ -222,6 +225,27 @@ export const Header: React.FC<HeaderProps> = ({
                     >
                       <Monitor className="w-3.5 h-3.5" />
                       <span>{lang === 'ur' ? 'آٹو' : 'Auto'}</span>
+                    </button>
+                    <button
+                      onClick={() => setThemePref('emerald')}
+                      className={`py-1.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${themePref === 'emerald' ? 'bg-[#10B981] text-white shadow-xs' : 'bg-white border border-[#ecece0] text-[#5a5a40] hover:bg-[#f0f0e4]'}`}
+                    >
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
+                      <span>{lang === 'ur' ? 'سبز' : 'Emerald'}</span>
+                    </button>
+                    <button
+                      onClick={() => setThemePref('desert')}
+                      className={`py-1.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${themePref === 'desert' ? 'bg-[#D97706] text-white shadow-xs' : 'bg-white border border-[#ecece0] text-[#5a5a40] hover:bg-[#f0f0e4]'}`}
+                    >
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#D97706]"></span>
+                      <span>{lang === 'ur' ? 'صحرائی' : 'Desert'}</span>
+                    </button>
+                    <button
+                      onClick={() => setThemePref('navy')}
+                      className={`py-1.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${themePref === 'navy' ? 'bg-[#3B82F6] text-white shadow-xs' : 'bg-white border border-[#ecece0] text-[#5a5a40] hover:bg-[#f0f0e4]'}`}
+                    >
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#3B82F6]"></span>
+                      <span>{lang === 'ur' ? 'نیلا' : 'Navy'}</span>
                     </button>
                   </div>
                 </div>

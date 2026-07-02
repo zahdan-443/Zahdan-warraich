@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CalcSubTab, DICTIONARY, FuelType, Language, Trip } from '../../types';
 import { Calculator, History, BarChart3, RotateCcw, Share2, Trash2, CheckCircle2, BookmarkPlus, FileDown } from 'lucide-react';
 import jsPDF from 'jspdf';
@@ -41,7 +41,7 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
       setFuelPrice('235.00');
     }
   };
-  const [mileage, setMileage] = useState<string>(initialMileage ? initialMileage.toString() : '9');
+  const [mileage, setMileage] = useState<string>(initialMileage ? initialMileage.toString() : '7');
   const [distance, setDistance] = useState<string>('350');
   const [toll, setToll] = useState<string>('1200');
   const [loading, setLoading] = useState<string>('0');
@@ -49,6 +49,12 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
   const [other, setOther] = useState<string>('0');
   const [isReturn, setIsReturn] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialMileage !== undefined) {
+      setMileage(initialMileage.toString());
+    }
+  }, [initialMileage]);
 
   // Result state
   const [lastCalc, setLastCalc] = useState<Omit<Trip, 'id' | 'name'> | null>(null);
@@ -150,12 +156,111 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     if (!lastCalc) {
-      window.alert("Please calculate trip estimate first.");
+      window.alert(lang === 'ur' ? "براہ کرم پہلے سفری اخراجات کا حساب لگائیں۔" : "Please calculate trip estimate first.");
       return;
     }
     try {
+      if (lang === 'ur') {
+        const container = document.createElement('div');
+        container.style.position = 'fixed';
+        container.style.top = '0';
+        container.style.left = '0';
+        container.style.width = '794px';
+        container.style.backgroundColor = '#ffffff';
+        container.style.zIndex = '-1000';
+        container.style.padding = '40px';
+        container.style.color = '#333333';
+        container.style.fontFamily = "'Noto Nastaliq Urdu', 'Inter', sans-serif";
+        container.style.direction = 'rtl';
+        container.style.boxSizing = 'border-box';
+
+        const fmt = (n: number) => n.toLocaleString() + ' روپے';
+
+        container.innerHTML = `
+          <div style="border-bottom: 3px solid #8b9d77; padding-bottom: 20px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h1 style="margin: 0; font-size: 30px; color: #4a4a35; font-weight: bold;">الہادی گڈز ٹرانسپورٹ (سمندری)</h1>
+              <p style="margin: 6px 0 0 0; font-size: 15px; color: #666;">باضابطہ فریٹ اور سفری اخراجات کا تخمینہ (رسید)</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <div style="text-align: left; font-size: 12px; color: #666; font-family: 'Inter', sans-serif;">
+                <div><strong>Date:</strong> ${new Date().toLocaleDateString('en-PK')}</div>
+                <div><strong>Time:</strong> ${new Date().toLocaleTimeString('en-PK')}</div>
+              </div>
+              <img src="/logo.png" style="width: 65px; height: 65px; object-fit: contain; border-radius: 50%; border: 2px solid #c59b27; padding: 3px; background: white;" />
+            </div>
+          </div>
+
+          <div style="background: #fdfbf7; border: 1px solid #ecece0; padding: 15px 20px; border-radius: 12px; margin-bottom: 25px; font-size: 15px;">
+            <strong>روٹ اور فاصلہ:</strong> ${lastCalc.dist} کلومیٹر (${lastCalc.isReturn ? 'دو طرفہ سفر' : 'یک طرفہ سفر'}) &nbsp;|&nbsp; <strong>فیول قسم:</strong> ${lastCalc.fuelType}
+          </div>
+
+          <h2 style="font-size: 20px; color: #4a4a35; border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 15px;">اخراجات اور سفری تفصیلات</h2>
+
+          <table style="width: 100%; border-collapse: collapse; font-size: 15px; margin-bottom: 30px;">
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #555;">فیول ریٹ (روپے فی لیٹر):</td>
+              <td style="padding: 10px 0; font-weight: bold; text-align: left; font-family: 'Inter', sans-serif;">${fuelPrice || 'N/A'} PKR / Ltr</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #555;">گاڑی کی اوسط (مائلیج Km/L):</td>
+              <td style="padding: 10px 0; font-weight: bold; text-align: left; font-family: 'Inter', sans-serif;">${mileage} KM / Ltr</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #555;">متوقع فیول کھپت:</td>
+              <td style="padding: 10px 0; font-weight: bold; text-align: left; font-family: 'Inter', sans-serif;">${lastCalc.consumed} Liters</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #555;">کل فیول خرچہ:</td>
+              <td style="padding: 10px 0; font-weight: bold; text-align: left;">${fmt(lastCalc.fuelCost)}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #555;">ٹول ٹیکس اور موٹروے:</td>
+              <td style="padding: 10px 0; font-weight: bold; text-align: left;">${fmt(lastCalc.toll)}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #555;">ڈرائیور الاؤنس / خرچہ:</td>
+              <td style="padding: 10px 0; font-weight: bold; text-align: left;">${fmt(lastCalc.driver)}</td>
+            </tr>
+            ${lastCalc.loading > 0 ? `
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #555;">لوڈنگ / ان لوڈنگ مزدوری:</td>
+              <td style="padding: 10px 0; font-weight: bold; text-align: left;">${fmt(lastCalc.loading)}</td>
+            </tr>` : ''}
+            ${lastCalc.other > 0 ? `
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #555;">متفرق اخراجات (چالان / مرمت):</td>
+              <td style="padding: 10px 0; font-weight: bold; text-align: left;">${fmt(lastCalc.other)}</td>
+            </tr>` : ''}
+          </table>
+
+          <div style="background: #f5f5f0; border: 2px solid #8b9d77; border-radius: 16px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div style="font-size: 20px; font-weight: bold; color: #4a4a35;">کل متوقع سفری اخراجات:</div>
+            <div style="font-size: 26px; font-weight: bold; color: #228b22; font-family: 'Inter', sans-serif;">PKR ${lastCalc.total.toLocaleString()}</div>
+          </div>
+
+          <div style="border-top: 1px solid #ccc; padding-top: 15px; font-size: 13px; color: #666; line-height: 1.8;">
+            <div>الہادی گڈز ٹرانسپورٹ فلیٹ مینجمنٹ سسٹم (سمندری، پنجاب) کی جانب سے جاری کردہ | 03005370443</div>
+            <div style="font-style: italic; color: #555;">یہ کمپیوٹر سے تیار کردہ دستاویز ہے، کسی دستخط کی ضرورت نہیں ہے۔</div>
+          </div>
+        `;
+
+        document.body.appendChild(container);
+        const canvas = await html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        document.body.removeChild(container);
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`Waybill_Urdu_${lastCalc.dist}km_${Date.now()}.pdf`);
+        return;
+      }
+
       const doc = new jsPDF();
       
       // Header

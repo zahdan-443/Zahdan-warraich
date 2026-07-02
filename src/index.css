@@ -97,4 +97,83 @@ html.dark .text-\[\#8e8e75\] {
   color: #b0b19b !important;
 }
 
+/* Emerald Theme Overrides */
+html.theme-emerald body {
+  background-color: #f0f7f4;
+  color: #1d3b2a;
+}
+html.theme-emerald .bg-\[\#fdfbf7\] {
+  background-color: #f0f7f4 !important;
+  color: #1d3b2a !important;
+}
+html.theme-emerald .bg-\[\#f9f9f2\] {
+  background-color: #e4f0ea !important;
+  color: #1d3b2a !important;
+}
+html.theme-emerald .bg-white {
+  background-color: #ffffff !important;
+  color: #1d3b2a !important;
+}
+html.theme-emerald .border-\[\#ecece0\] {
+  border-color: #cce3d6 !important;
+}
+html.theme-emerald .text-\[\#4a4a35\] {
+  color: #163823 !important;
+}
+
+/* Desert Gold Theme Overrides */
+html.theme-desert body {
+  background-color: #fcf8ee;
+  color: #4a3818;
+}
+html.theme-desert .bg-\[\#fdfbf7\] {
+  background-color: #fcf8ee !important;
+  color: #4a3818 !important;
+}
+html.theme-desert .bg-\[\#f9f9f2\] {
+  background-color: #f5eedc !important;
+  color: #4a3818 !important;
+}
+html.theme-desert .bg-white {
+  background-color: #ffffff !important;
+  color: #4a3818 !important;
+}
+html.theme-desert .border-\[\#ecece0\] {
+  border-color: #e6dac0 !important;
+}
+html.theme-desert .text-\[\#4a4a35\] {
+  color: #3d2d10 !important;
+}
+
+/* Royal Navy Theme Overrides */
+html.theme-navy body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+html.theme-navy .bg-\[\#fdfbf7\] {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+html.theme-navy .bg-\[\#f9f9f2\] {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+html.theme-navy .bg-white {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+html.theme-navy .border-\[\#ecece0\] {
+  border-color: #334155 !important;
+}
+html.theme-navy .text-\[\#4a4a35\] {
+  color: #f8fafc !important;
+}
+html.theme-navy .text-\[\#5a5a40\] {
+  color: #cbd5e1 !important;
+}
+html.theme-navy .text-\[\#8e8e75\] {
+  color: #94a3b8 !important;
+}
+
+
 

@@ -33,7 +33,7 @@ export const VehiclesView: React.FC<VehiclesViewProps> = ({
     onAddVehicle({
       reg: reg.trim().toUpperCase(),
       model: model.trim() || 'General Freight',
-      mileage: parseFloat(mileage) || 8.5,
+      mileage: parseFloat(mileage) || 7,
       owner: owner.trim() || 'Fleet Partner',
       capacity: parseFloat(capacity) || 12
     });
