@@ -16,9 +16,17 @@ import {
   Calendar,
   CreditCard,
   AlertTriangle,
-  FileText
+  FileText,
+  History,
+  BookOpen,
+  X,
+  Activity,
+  CheckCircle2,
+  Wrench,
+  Menu
 } from 'lucide-react';
 import { AlHadiLogo } from '../AlHadiLogo';
+import { LiveFuelPriceWidget } from '../LiveFuelPriceWidget';
 
 interface HomeViewProps {
   lang: Language;
@@ -26,6 +34,7 @@ interface HomeViewProps {
   vehicles: Vehicle[];
   drivers: Driver[];
   onNavigate: (tab: ActiveTab) => void;
+  onOpenMenu?: () => void;
 }
 
 interface CalendarEvent {
@@ -36,8 +45,11 @@ interface CalendarEvent {
   status: 'pending' | 'active' | 'completed';
 }
 
-export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drivers, onNavigate }) => {
+export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drivers, onNavigate, onOpenMenu }) => {
   const t = DICTIONARY[lang];
+  const [showRecentLogs, setShowRecentLogs] = useState(false);
+  const [showSafarDiaryModal, setShowSafarDiaryModal] = useState(false);
+  const [showQuickOpsModal, setShowQuickOpsModal] = useState(false);
   const currentDate = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'ur-PK', {
     weekday: 'long',
     day: 'numeric',
@@ -243,19 +255,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
   const urduDayLetters = ['ا', 'پ', 'م', 'ب', 'ج', 'ج', 'ہ'];
   const englishDayLetters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-  const quickItems: { id: ActiveTab; title: string; desc: string; icon: React.ReactNode }[] = [
-    { 
-      id: 'calculator', 
-      title: t.nav.calculator, 
-      desc: lang === 'ur' ? "ایندھن کی کھپت اور ٹول ٹیکس کا حساب لگائیں" : "Estimate fuel consumption & toll expenses", 
-      icon: <Calculator className="w-5 h-5 text-[#8b9d77]" /> 
-    },
-    { 
-      id: 'verify', 
-      title: t.nav.verify, 
-      desc: lang === 'ur' ? "ایم ٹی ایم آئی ایس، ڈی ایل آئی ایم ایس اور ای چالان تصدیق" : "Official MTMIS, DLIMS & E-Challan portals", 
-      icon: <ShieldCheck className="w-5 h-5 text-[#8b9d77]" /> 
-    },
+  const quickItems: { id: string; title: string; desc: string; icon: React.ReactNode }[] = [
     { 
       id: 'vehicle', 
       title: t.nav.vehicle, 
@@ -280,189 +280,151 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
       desc: lang === 'ur' ? "ڈیلی ڈیزل اور پیٹرول کی مارکیٹ قیمتیں" : "Log daily diesel & petrol market prices", 
       icon: <Fuel className="w-5 h-5 text-[#8b9d77]" /> 
     },
+    { 
+      id: 'recentLogs', 
+      title: lang === 'ur' ? 'حالیہ لاگز کھولیں' : 'Open Recent Logs', 
+      desc: lang === 'ur' ? 'حالیہ سفری لاگز اور تفصیل دیکھیں' : 'View recent trip history logs', 
+      icon: <History className="w-5 h-5 text-[#8b9d77]" /> 
+    },
   ];
 
   return (
     <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-10 max-w-7xl mx-auto w-full">
       
-      {/* Left Column (3 cols): Fleet & Operator Summary Card */}
-      <div className="lg:col-span-3 flex flex-col gap-6">
-        <div className="bg-white p-8 rounded-[40px] shadow-sm border border-[#ecece0] flex-1 flex flex-col items-center text-center">
-          <div className="w-24 h-24 mb-4 flex items-center justify-center overflow-hidden">
-            <AlHadiLogo className="w-24 h-24" />
-          </div>
-          
-          <h2 className="text-xl font-serif font-bold text-[#4a4a35]">
-            Al-Hadi Goods Samundri
-          </h2>
-          <h3 className="text-2xl font-serif font-bold text-[#8b9d77] mt-1">
-            الھادی گڈز سمندری
-          </h3>
+      {/* Left Column (7 cols): Al-Hadi Goods Samundri Section & Live Fuel Prices */}
+      <div className="lg:col-span-7 flex flex-col gap-8">
+        
+        {/* First Section: 2 Rows of 3 Operational & Portal Buttons */}
+        <div className="bg-white p-5 sm:p-7 rounded-[36px] shadow-sm border border-[#ecece0]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5">
+            {/* Row 1, Button 1: Safar Diary */}
+            <button
+              onClick={() => setShowSafarDiaryModal(true)}
+              className="p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
+            >
+              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <BookOpen className="w-5 h-5 text-[#8b9d77]" />
+              </div>
+              <div>
+                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
+                  {lang === 'ur' ? 'سفر ڈائری' : 'Safar Diary'}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                  {lang === 'ur' ? 'روزانہ ٹرپ اور اخراجات کا ریکارڈ' : 'Daily trip & expense logs'}
+                </div>
+              </div>
+            </button>
 
-          {/* 4 Quick Access Buttons under the Name */}
-          <div className="w-full grid grid-cols-2 gap-3 mt-6">
+            {/* Row 1, Button 2: Quick Operations */}
+            <button
+              onClick={() => setShowQuickOpsModal(true)}
+              className="p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
+            >
+              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <Wrench className="w-5 h-5 text-[#8b9d77]" />
+              </div>
+              <div>
+                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
+                  {lang === 'ur' ? 'کوئیک آپریشنز' : 'Quick Operations'}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                  {lang === 'ur' ? 'گاڑیاں، ڈرائیورز اور پورٹلز' : 'Fleet tools & portal shortcuts'}
+                </div>
+              </div>
+            </button>
+
+            {/* Row 1, Button 3: Trip Calculator */}
             <button
               onClick={() => onNavigate('calculator')}
-              className="p-3 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/5 rounded-2xl text-center transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center gap-1.5 shadow-2xs"
+              className="p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
             >
-              <Calculator className="w-5 h-5 text-[#8b9d77]" />
-              <div className="font-serif font-bold text-[11px] text-[#4a4a35]">{lang === 'ur' ? 'کیلکولیٹر' : 'Calculator'}</div>
+              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <Calculator className="w-5 h-5 text-[#8b9d77]" />
+              </div>
+              <div>
+                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
+                  {lang === 'ur' ? 'سفر اور فیول کیلکولیٹر' : 'Trip Calculator'}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                  {lang === 'ur' ? 'کرایہ اور فیول منافع کا تخمینہ' : 'Freight cost & profit estimate'}
+                </div>
+              </div>
             </button>
 
+            {/* Row 2, Button 1: Vehicles Verification */}
             <button
               onClick={() => onNavigate('verify')}
-              className="p-3 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#3B82F6] hover:bg-[#3B82F6]/5 rounded-2xl text-center transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center gap-1.5 shadow-2xs"
+              className="p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
             >
-              <ShieldCheck className="w-5 h-5 text-[#3B82F6]" />
-              <div className="font-serif font-bold text-[11px] text-[#4a4a35]">{lang === 'ur' ? 'ایم ٹی ایم آئی ایس' : 'MTMIS'}</div>
+              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <Truck className="w-5 h-5 text-[#8b9d77]" />
+              </div>
+              <div>
+                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
+                  {lang === 'ur' ? 'گاڑیوں کی تصدیق' : 'Vehicles Verification'}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                  {lang === 'ur' ? 'MTMIS پنجاب و ایکسائز ریکارڈ' : 'MTMIS Punjab & Excise portal'}
+                </div>
+              </div>
             </button>
 
+            {/* Row 2, Button 2: License Verification */}
             <button
               onClick={() => onNavigate('verify')}
-              className="p-3 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#10B981] hover:bg-[#10B981]/5 rounded-2xl text-center transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center gap-1.5 shadow-2xs"
+              className="p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
             >
-              <CreditCard className="w-5 h-5 text-[#10B981]" />
-              <div className="font-serif font-bold text-[11px] text-[#4a4a35]">{lang === 'ur' ? 'ڈی ایل آئی ایم ایس' : 'DLIMS'}</div>
+              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <ShieldCheck className="w-5 h-5 text-[#8b9d77]" />
+              </div>
+              <div>
+                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
+                  {lang === 'ur' ? 'لائسنس کی تصدیق' : 'License Verification'}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                  {lang === 'ur' ? 'DLIMS پنجاب و موٹروے پولیس' : 'DLIMS Punjab Highway checks'}
+                </div>
+              </div>
             </button>
 
+            {/* Row 2, Button 3: E-Challan Check */}
             <button
               onClick={() => onNavigate('verify')}
-              className="p-3 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#EF4444] hover:bg-[#EF4444]/5 rounded-2xl text-center transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-center gap-1.5 shadow-2xs"
+              className="p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
             >
-              <FileText className="w-5 h-5 text-[#EF4444]" />
-              <div className="font-serif font-bold text-[11px] text-[#4a4a35]">{lang === 'ur' ? 'ای چالان' : 'E-Challan'}</div>
+              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <AlertTriangle className="w-5 h-5 text-[#8b9d77]" />
+              </div>
+              <div>
+                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
+                  {lang === 'ur' ? 'ای چالان چیک کریں' : 'E-Challan Check'}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                  {lang === 'ur' ? 'PSCA سیف سٹی چالان ریکارڈ' : 'PSCA Safe City traffic records'}
+                </div>
+              </div>
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Middle Column (6 cols): Quick Operations & Recent Safar Logs */}
-      <div className="lg:col-span-6 flex flex-col gap-8">
-        
-        {/* Hero Title Header Inside Card */}
+        {/* Live Fuel Prices Monitor Card */}
         <div className="bg-white p-8 md:p-10 rounded-[40px] shadow-sm border border-[#ecece0]">
-          <header className="flex justify-between items-end mb-8 border-b border-[#ecece0] pb-6">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#4a4a35]">
-                {lang === 'ur' ? 'آج کا سفر' : 'Safar Diary'}
-              </h1>
-              <p className="text-[#8b9d77] italic text-sm mt-1">{currentDate}</p>
-            </div>
-            <div className="p-3 bg-[#f0f0e4] rounded-full text-[#5a5a40]">
-              <Truck className="w-5 h-5" />
-            </div>
-          </header>
-
-          {/* Moved Stats Bars Section */}
-          <div className="grid grid-cols-3 gap-3 mb-8">
-            <div className="p-4 bg-[#f9f9f2] rounded-2xl border border-[#ecece0]/50 text-center transition-all hover:border-[#8b9d77]">
-              <div className="text-[10px] uppercase tracking-tighter text-[#8e8e75] mb-1 font-sans font-semibold">
-                {t.stats.trips}
-              </div>
-              <div className="text-2xl font-serif font-bold text-[#5a5a40]">{trips.length}</div>
-            </div>
-            
-            <div className="p-4 bg-[#f9f9f2] rounded-2xl border border-[#ecece0]/50 text-center transition-all hover:border-[#8b9d77]">
-              <div className="text-[10px] uppercase tracking-tighter text-[#8e8e75] mb-1 font-sans font-semibold">
-                {t.stats.vehicles}
-              </div>
-              <div className="text-2xl font-serif font-bold text-[#5a5a40]">{vehicles.length}</div>
-            </div>
-
-            <div className="p-4 bg-[#f9f9f2] rounded-2xl border border-[#ecece0]/50 text-center transition-all hover:border-[#8b9d77]">
-              <div className="text-[10px] uppercase tracking-tighter text-[#8e8e75] mb-1 font-sans font-semibold">
-                {t.stats.drivers}
-              </div>
-              <div className="text-2xl font-serif font-bold text-[#5a5a40]">{drivers.length}</div>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <h3 className="text-xs uppercase tracking-widest font-bold text-[#8e8e75] mb-4">
-              {t.quickAccess}
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-serif font-bold text-lg text-[#4a4a35] flex items-center gap-2">
+              <Fuel className="w-5 h-5 text-[#8b9d77]" />
+              <span>{lang === 'ur' ? 'پاکستان پول ریٹ مانیٹر' : 'Live POL Rates Monitor'}</span>
             </h3>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {quickItems.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => onNavigate(item.id)}
-                  className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-white transition-all cursor-pointer group flex items-start gap-3.5 shadow-2xs active:scale-98"
-                >
-                  <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shrink-0 shadow-2xs">
-                    {item.icon}
-                  </div>
-                  <div>
-                    <h4 className="font-serif font-bold text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
-                      {item.title}
-                    </h4>
-                    <p className="text-xs text-[#8e8e75] mt-1 leading-relaxed font-sans line-clamp-2">
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-[#10B981]/15 text-[#10B981] uppercase tracking-wider">
+              {lang === 'ur' ? 'لائیو اپڈیٹ' : 'Live Updated'}
+            </span>
           </div>
-
-          <div className="mt-8 pt-6 border-t border-[#ecece0]">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs uppercase tracking-widest font-bold text-[#8e8e75]">
-                {t.recentTrips}
-              </h3>
-              <button
-                onClick={() => onNavigate('calculator')}
-                className="text-xs font-serif italic text-[#8b9d77] hover:underline cursor-pointer"
-              >
-                {lang === 'ur' ? 'مکمل ریکارڈ دیکھیں ←' : 'View full history →'}
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {trips.length === 0 ? (
-                <div className="p-8 text-center bg-[#fdfbf7] rounded-3xl border border-[#ecece0]">
-                  <p className="text-sm italic text-[#8e8e75]">{t.noTrips}</p>
-                </div>
-              ) : (
-                trips.slice(0, 3).map((trip, idx) => (
-                  <div
-                    key={trip.id}
-                    onClick={() => onNavigate('calculator')}
-                    className={`flex items-start justify-between gap-4 p-5 rounded-3xl transition-all cursor-pointer ${
-                      idx === 0
-                        ? 'bg-[#fdfbf7] border-l-4 border-[#8b9d77] border-y border-r border-[#ecece0] shadow-2xs'
-                        : 'bg-white border border-[#ecece0] hover:border-[#8b9d77]'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3.5">
-                      <div className={`w-6 h-6 rounded-full mt-0.5 flex items-center justify-center shrink-0 ${
-                        idx === 0 ? 'border-2 border-[#8b9d77] bg-[#8b9d77]/10' : 'border-2 border-[#d8d8c0]'
-                      }`}>
-                        <div className={`w-2 h-2 rounded-full ${idx === 0 ? 'bg-[#8b9d77]' : 'bg-[#d8d8c0]'}`}></div>
-                      </div>
-                      <div>
-                        <h4 className="font-serif font-bold text-[#4a4a35]">{trip.name}</h4>
-                        <p className="text-xs text-[#8e8e75] mt-0.5 font-sans">
-                          {trip.fuelType} · {trip.dist} km · {trip.consumed} L
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <span className="font-serif font-bold text-base md:text-lg text-[#5a5a40]">
-                        PKR {trip.total.toLocaleString()}
-                      </span>
-                      <div className="text-[10px] text-[#8e8e75] mt-0.5">{trip.date}</div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+          <LiveFuelPriceWidget lang={lang} compact />
         </div>
+
       </div>
 
-      {/* Right Column (3 cols): Motivation Wisdom & Calendar */}
-      <div className="lg:col-span-3 flex flex-col gap-8">
+      {/* Right Column (5 cols): Motivation Wisdom & Calendar */}
+      <div className="lg:col-span-5 flex flex-col gap-8">
         
         {/* Wisdom Sage Green Accent Card */}
         <div className="bg-[#8b9d77] text-white p-8 rounded-[40px] shadow-sm relative overflow-hidden group">
@@ -661,6 +623,335 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
         </div>
 
       </div>
+
+      {/* Safar Diary Modal */}
+      {showSafarDiaryModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white rounded-[40px] max-w-4xl w-full p-6 md:p-10 shadow-2xl border border-[#ecece0] max-h-[90vh] overflow-y-auto space-y-8 text-left">
+            
+            {/* Modal Header */}
+            <header className="flex justify-between items-start border-b border-[#ecece0] pb-6">
+              <div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-[#8b9d77]/15 text-[#5a5a40] uppercase tracking-wider mb-2">
+                  <BookOpen className="w-3 h-3 text-[#8b9d77]" />
+                  {lang === 'ur' ? 'سفر ڈائری لاگز' : 'Safar Diary Logs'}
+                </span>
+                <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#4a4a35]">
+                  {lang === 'ur' ? 'الھادی سفر ڈائری اور ریکارڈ' : 'Al-Hadi Safar Diary'}
+                </h2>
+                <p className="text-[#8b9d77] italic text-xs mt-1">{currentDate}</p>
+              </div>
+              <button
+                onClick={() => setShowSafarDiaryModal(false)}
+                className="p-3 bg-[#f0f0e4] hover:bg-[#5a5a40] hover:text-white rounded-full text-[#5a5a40] transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </header>
+
+            {/* Stats Bars Section */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-4 bg-[#f9f9f2] rounded-2xl border border-[#ecece0]/50 text-center transition-all hover:border-[#8b9d77]">
+                <div className="text-[10px] uppercase tracking-tighter text-[#8e8e75] mb-1 font-sans font-semibold">
+                  {t.stats.trips}
+                </div>
+                <div className="text-2xl font-serif font-bold text-[#5a5a40]">{trips.length}</div>
+              </div>
+              
+              <div className="p-4 bg-[#f9f9f2] rounded-2xl border border-[#ecece0]/50 text-center transition-all hover:border-[#8b9d77]">
+                <div className="text-[10px] uppercase tracking-tighter text-[#8e8e75] mb-1 font-sans font-semibold">
+                  {t.stats.vehicles}
+                </div>
+                <div className="text-2xl font-serif font-bold text-[#5a5a40]">{vehicles.length}</div>
+              </div>
+
+              <div className="p-4 bg-[#f9f9f2] rounded-2xl border border-[#ecece0]/50 text-center transition-all hover:border-[#8b9d77]">
+                <div className="text-[10px] uppercase tracking-tighter text-[#8e8e75] mb-1 font-sans font-semibold">
+                  {t.stats.drivers}
+                </div>
+                <div className="text-2xl font-serif font-bold text-[#5a5a40]">{drivers.length}</div>
+              </div>
+            </div>
+
+            {/* Add Trip Action Banner */}
+            <div className="p-5 bg-[#fdfbf7] rounded-3xl border border-[#8b9d77]/40 flex items-center justify-between gap-4">
+              <div>
+                <h4 className="font-serif font-bold text-sm text-[#4a4a35]">
+                  {lang === 'ur' ? 'نیا سفری اخراجات لاگ شامل کریں' : 'Log New Trip & Calculate Expenses'}
+                </h4>
+                <p className="text-xs text-[#8e8e75]">
+                  {lang === 'ur' ? 'ڈیزل، ٹول ٹیکس اور روٹ خرچ کا حساب لگائیں' : 'Calculate fuel, toll tax, and route consumption'}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowSafarDiaryModal(false);
+                  onNavigate('calculator');
+                }}
+                className="px-5 py-2.5 rounded-2xl bg-[#8b9d77] hover:bg-[#798a67] text-white text-xs font-bold font-serif shrink-0 transition-all shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{lang === 'ur' ? 'نیا ٹرپ درج کریں' : 'New Trip Log'}</span>
+              </button>
+            </div>
+
+            {/* Recent Trips List Inside Modal */}
+            <div id="modal-recent-logs" className="pt-2">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs uppercase tracking-widest font-bold text-[#8e8e75]">
+                  {t.recentTrips} ({trips.length})
+                </h3>
+              </div>
+
+              <div className="space-y-3">
+                {trips.length === 0 ? (
+                  <div className="p-8 text-center bg-[#fdfbf7] rounded-3xl border border-[#ecece0]">
+                    <p className="text-sm italic text-[#8e8e75]">{t.noTrips}</p>
+                  </div>
+                ) : (
+                  trips.slice(0, 8).map((trip, idx) => (
+                    <div
+                      key={trip.id}
+                      onClick={() => {
+                        setShowSafarDiaryModal(false);
+                        onNavigate('calculator');
+                      }}
+                      className={`flex items-start justify-between gap-4 p-4 rounded-3xl transition-all cursor-pointer ${
+                        idx === 0
+                          ? 'bg-[#fdfbf7] border-l-4 border-[#8b9d77] border-y border-r border-[#ecece0] shadow-2xs'
+                          : 'bg-white border border-[#ecece0] hover:border-[#8b9d77]'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`w-5 h-5 rounded-full mt-0.5 flex items-center justify-center shrink-0 ${
+                          idx === 0 ? 'border-2 border-[#8b9d77] bg-[#8b9d77]/10' : 'border-2 border-[#d8d8c0]'
+                        }`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-[#8b9d77]' : 'bg-[#d8d8c0]'}`}></div>
+                        </div>
+                        <div>
+                          <h4 className="font-serif font-bold text-sm text-[#4a4a35]">{trip.name}</h4>
+                          <p className="text-[11px] text-[#8e8e75] mt-0.5 font-sans">
+                            {trip.fuelType} · {trip.dist} km · {trip.consumed} L
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="font-serif font-bold text-base text-[#5a5a40]">
+                          PKR {trip.total.toLocaleString()}
+                        </span>
+                        <div className="text-[9px] text-[#8e8e75]">{trip.date}</div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer Close Button */}
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => setShowSafarDiaryModal(false)}
+                className="px-6 py-2.5 rounded-full bg-[#4a4a35] text-white font-serif font-bold text-xs hover:bg-[#383827] transition-all cursor-pointer shadow-sm"
+              >
+                {lang === 'ur' ? 'ڈائری بند کریں' : 'Close Safar Diary'}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* Quick Operations Modal */}
+      {showQuickOpsModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white rounded-[40px] max-w-4xl w-full p-6 md:p-10 shadow-2xl border border-[#ecece0] max-h-[90vh] overflow-y-auto space-y-8 text-left">
+            
+            {/* Modal Header */}
+            <header className="flex justify-between items-start border-b border-[#ecece0] pb-6">
+              <div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-[#8b9d77]/15 text-[#5a5a40] uppercase tracking-wider mb-2">
+                  <Wrench className="w-3 h-3 text-[#8b9d77]" />
+                  {lang === 'ur' ? 'کوئیک پورٹل' : 'Quick Portal'}
+                </span>
+                <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#4a4a35]">
+                  {lang === 'ur' ? 'کوئیک آپریشنز اور مانیٹرنگ' : 'Quick Operations'}
+                </h2>
+                <p className="text-[#8e8e75] text-xs mt-1">
+                  {lang === 'ur' ? 'تمام فلیٹ ٹولز، پورٹل اور سرکاری تصدیقی خدمات تک فوری رسائی' : 'Direct access to fleet management tools and official Punjab verification portals.'}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowQuickOpsModal(false)}
+                className="p-3 bg-[#f0f0e4] hover:bg-[#5a5a40] hover:text-white rounded-full text-[#5a5a40] transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </header>
+
+            {/* Quick Operations Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              
+              {/* Open Recent Logs Button inside Quick Operations as requested */}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowQuickOpsModal(false);
+                  setShowSafarDiaryModal(true);
+                }}
+                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
+              >
+                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                  <History className="w-6 h-6 text-[#8b9d77]" />
+                </div>
+                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
+                  {lang === 'ur' ? 'حالیہ لاگز کھولیں' : 'Open Recent Logs'}
+                </span>
+              </button>
+
+              {/* Calculator */}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowQuickOpsModal(false);
+                  onNavigate('calculator');
+                }}
+                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
+              >
+                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                  <Calculator className="w-6 h-6 text-[#8b9d77]" />
+                </div>
+                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
+                  {lang === 'ur' ? 'سفر اور فیول کیلکولیٹر' : 'Trip Calculator'}
+                </span>
+              </button>
+
+              {/* Vehicles */}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowQuickOpsModal(false);
+                  onNavigate('vehicles');
+                }}
+                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
+              >
+                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                  <Truck className="w-6 h-6 text-[#8b9d77]" />
+                </div>
+                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
+                  {lang === 'ur' ? 'گاڑیاں اور فلیٹ' : 'Vehicles Fleet'}
+                </span>
+              </button>
+
+              {/* Drivers */}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowQuickOpsModal(false);
+                  onNavigate('drivers');
+                }}
+                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
+              >
+                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                  <Users className="w-6 h-6 text-[#8b9d77]" />
+                </div>
+                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
+                  {lang === 'ur' ? 'ڈرائیورز ڈائریکٹری' : 'Drivers List'}
+                </span>
+              </button>
+
+              {/* Routes */}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowQuickOpsModal(false);
+                  onNavigate('routes');
+                }}
+                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
+              >
+                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                  <MapPin className="w-6 h-6 text-[#8b9d77]" />
+                </div>
+                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
+                  {lang === 'ur' ? 'روٹس اور ٹول ٹیکس' : 'Routes & Tolls'}
+                </span>
+              </button>
+
+              {/* Fuel Log */}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowQuickOpsModal(false);
+                  onNavigate('fuel');
+                }}
+                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
+              >
+                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                  <Fuel className="w-6 h-6 text-[#8b9d77]" />
+                </div>
+                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
+                  {lang === 'ur' ? 'فیول لاگ ریکارڈ' : 'Fuel Consumption'}
+                </span>
+              </button>
+
+              {/* Vehicle Verification */}
+              <button
+                type="button"
+                onClick={() => window.open('https://mtmis.excise.punjab.gov.pk', '_blank', 'noopener,noreferrer')}
+                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#3B82F6] hover:bg-[#3B82F6]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
+              >
+                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#3B82F6] shadow-2xs shrink-0">
+                  <ShieldCheck className="w-6 h-6 text-[#3B82F6]" />
+                </div>
+                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#3B82F6] transition-colors">
+                  {lang === 'ur' ? 'گاڑیوں کی تصدیق (MTMIS)' : 'Verify Vehicle'}
+                </span>
+              </button>
+
+              {/* License Verification */}
+              <button
+                type="button"
+                onClick={() => window.open('https://dlims.punjab.gov.pk', '_blank', 'noopener,noreferrer')}
+                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#10B981] hover:bg-[#10B981]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
+              >
+                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#10B981] shadow-2xs shrink-0">
+                  <CreditCard className="w-6 h-6 text-[#10B981]" />
+                </div>
+                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#10B981] transition-colors">
+                  {lang === 'ur' ? 'لائسنس تصدیق (DLIMS)' : 'Verify License'}
+                </span>
+              </button>
+
+              {/* Check E-Challan */}
+              <button
+                type="button"
+                onClick={() => window.open('https://echallan.psca.gop.pk', '_blank', 'noopener,noreferrer')}
+                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#EF4444] hover:bg-[#EF4444]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95 sm:col-span-1 md:col-span-2"
+              >
+                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#EF4444] shadow-2xs shrink-0">
+                  <FileText className="w-6 h-6 text-[#EF4444]" />
+                </div>
+                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#EF4444] transition-colors">
+                  {lang === 'ur' ? 'ای چالان چیک کریں (PSCA)' : 'Check E-Challan'}
+                </span>
+              </button>
+
+            </div>
+
+            {/* Modal Footer Close Button */}
+            <div className="text-center pt-2 border-t border-[#ecece0]">
+              <button
+                type="button"
+                onClick={() => setShowQuickOpsModal(false)}
+                className="px-6 py-2.5 rounded-full bg-[#4a4a35] text-white font-serif font-bold text-xs hover:bg-[#383827] transition-all cursor-pointer shadow-sm"
+              >
+                {lang === 'ur' ? 'پورٹل بند کریں' : 'Close Quick Operations'}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

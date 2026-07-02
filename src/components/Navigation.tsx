@@ -22,67 +22,24 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, onSelectTab, 
   ];
 
   return (
-    <>
-      {/* Desktop & Tablet Top Navigation Bar */}
-      <nav className="hidden md:flex items-center gap-8 px-12 py-4 bg-[#fdfbf7] border-b border-[#ecece0] overflow-x-auto no-scrollbar sticky top-20 z-40">
-        {navItems.map((item) => {
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onSelectTab(item.id)}
-              className={`flex items-center gap-2 text-xs uppercase tracking-widest font-medium whitespace-nowrap py-2 transition-all cursor-pointer ${
-                isActive
-                  ? 'text-[#8b9d77] border-b-2 border-[#8b9d77] font-bold'
-                  : 'text-[#8e8e75] hover:text-[#4a4a35]'
-              }`}
-            >
-              <span className={isActive ? 'text-[#8b9d77]' : 'text-[#8e8e75]'}>{item.icon}</span>
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* Mobile Horizontal Scrolling Pills Nav */}
-      <nav className="md:hidden flex items-center gap-2 px-4 py-3 bg-[#fdfbf7] border-b border-[#ecece0] overflow-x-auto no-scrollbar sticky top-20 z-40">
-        {navItems.map((item) => {
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onSelectTab(item.id)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] uppercase tracking-wider font-semibold whitespace-nowrap transition-all shrink-0 cursor-pointer ${
-                isActive
-                  ? 'bg-[#5a5a40] text-white shadow-xs'
-                  : 'bg-white text-[#8e8e75] border border-[#ecece0]'
-              }`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* Mobile Bottom Fixed Navigation Bar (Main 5 items) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#fdfbf7]/95 backdrop-blur-md border-t border-[#ecece0] px-2 py-2 flex items-center justify-around z-50">
-        {navItems.slice(0, 5).map((item) => {
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onSelectTab(item.id)}
-              className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition-all ${
-                isActive ? 'text-[#8b9d77] font-bold bg-[#f0f0e4]/50' : 'text-[#8e8e75]'
-              }`}
-            >
-              {item.icon}
-              <span className="text-[9px] uppercase tracking-tighter leading-none">{item.label}</span>
-            </button>
-          );
-        })}
-      </div>
-    </>
+    <nav className="flex items-center justify-start md:justify-center overflow-x-auto no-scrollbar gap-6 md:gap-8 px-4 md:px-12 py-3 md:py-4 bg-[#fdfbf7] border-b border-[#ecece0] sticky top-20 z-40">
+      {navItems.map((item) => {
+        const isActive = activeTab === item.id;
+        return (
+          <button
+            key={item.id}
+            onClick={() => onSelectTab(item.id)}
+            className={`flex items-center gap-2 text-xs uppercase tracking-widest font-medium whitespace-nowrap py-1.5 md:py-2 transition-all cursor-pointer shrink-0 ${
+              isActive
+                ? 'text-[#8b9d77] border-b-2 border-[#8b9d77] font-bold'
+                : 'text-[#8e8e75] hover:text-[#4a4a35]'
+            }`}
+          >
+            <span className={isActive ? 'text-[#8b9d77]' : 'text-[#8e8e75]'}>{item.icon}</span>
+            <span>{item.label}</span>
+          </button>
+        );
+      })}
+    </nav>
   );
 };

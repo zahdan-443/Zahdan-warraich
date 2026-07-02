@@ -3,6 +3,7 @@ import { CalcSubTab, DICTIONARY, FuelType, Language, Trip } from '../../types';
 import { Calculator, History, BarChart3, RotateCcw, Share2, Trash2, CheckCircle2, BookmarkPlus, FileDown } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { LiveFuelPriceWidget } from '../LiveFuelPriceWidget';
 
 interface TripCostViewProps {
   lang: Language;
@@ -11,6 +12,7 @@ interface TripCostViewProps {
   onDeleteTrip: (id: number) => void;
   onClearAllTrips: () => void;
   initialMileage?: number;
+  onNavigate?: (tab: any) => void;
 }
 
 export const TripCostView: React.FC<TripCostViewProps> = ({
@@ -19,14 +21,26 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
   onSaveTrip,
   onDeleteTrip,
   onClearAllTrips,
-  initialMileage
+  initialMileage,
+  onNavigate
 }) => {
   const t = DICTIONARY[lang].calc;
   const [activeSubTab, setActiveSubTab] = useState<CalcSubTab>('calc');
 
   // Calculator State
   const [fuelType, setFuelType] = useState<FuelType>('diesel');
-  const [fuelPrice, setFuelPrice] = useState<string>('290');
+  const [fuelPrice, setFuelPrice] = useState<string>('311.47');
+
+  const handleSelectFuelType = (type: FuelType) => {
+    setFuelType(type);
+    if (type === 'diesel') {
+      setFuelPrice('311.47');
+    } else if (type === 'petrol') {
+      setFuelPrice('298.50');
+    } else if (type === 'cng') {
+      setFuelPrice('235.00');
+    }
+  };
   const [mileage, setMileage] = useState<string>(initialMileage ? initialMileage.toString() : '9');
   const [distance, setDistance] = useState<string>('350');
   const [toll, setToll] = useState<string>('1200');
@@ -214,6 +228,15 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
             
             {/* Input Column (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
+              <LiveFuelPriceWidget
+                compact
+                lang={lang}
+                onApplyRates={(d, p, c) => {
+                  if (fuelType === 'diesel') setFuelPrice(d);
+                  else if (fuelType === 'petrol') setFuelPrice(p);
+                  else if (c && fuelType === 'cng') setFuelPrice(c);
+                }}
+              />
               
               <div className="p-6 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] space-y-5">
                 <h3 className="font-serif font-bold text-lg text-[#4a4a35] flex items-center gap-2 border-b border-[#ecece0] pb-3">
@@ -222,21 +245,21 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
                 </h3>
 
                 {/* Fuel Selector */}
-                <div className="grid grid-cols-3 gap-3">
-                  {(['diesel', 'petrol', 'cng'] as FuelType[]).map((f) => {
+                <div className="grid grid-cols-2 gap-3">
+                  {(['diesel', 'petrol'] as FuelType[]).map((f) => {
                     const isSelected = fuelType === f;
                     return (
                       <button
                         key={f}
                         type="button"
-                        onClick={() => setFuelType(f)}
+                        onClick={() => handleSelectFuelType(f)}
                         className={`py-3 px-3 rounded-2xl border text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex flex-col items-center gap-1.5 ${
                           isSelected
                             ? 'border-[#8b9d77] bg-[#8b9d77]/10 text-[#5a5a40] shadow-2xs'
                             : 'border-[#ecece0] bg-white text-[#8e8e75] hover:border-[#8b9d77]/50'
                         }`}
                       >
-                        <span className="text-base">{f === 'diesel' ? '🛢️' : f === 'petrol' ? '⛽' : '🔵'}</span>
+                        <span className="text-base">{f === 'diesel' ? '🛢️' : '⛽'}</span>
                         <span>{f}</span>
                       </button>
                     );
@@ -282,6 +305,22 @@ export const TripCostView: React.FC<TripCostViewProps> = ({
                     placeholder="350"
                     className="w-full bg-white border border-[#ecece0] rounded-2xl px-4 py-3 text-sm font-semibold text-[#4a4a35] focus:border-[#8b9d77] focus:outline-none shadow-2xs transition-all font-mono"
                   />
+                </div>
+
+                {/* Update Market Rates Button */}
+                <div className="pt-2 space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onNavigate) onNavigate('fuel');
+                    }}
+                    className="w-full py-3 bg-[#f0f0e4] hover:bg-[#8b9d77]/20 border border-[#d8d8c0] hover:border-[#8b9d77] text-[#5a5a40] rounded-2xl font-serif font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
+                  >
+                    <span>⚡ {lang === 'ur' ? 'مارکیٹ ریٹ اپ ڈیٹ کریں' : 'Update Market Rates'}</span>
+                  </button>
+                  <div className="text-[10px] text-center text-[#8e8e75]">
+                    Benchmark rates verified via <a href="https://psopk.com/fuel-prices/pol/archives" target="_blank" rel="noopener noreferrer" className="underline font-bold text-[#5a5a40] hover:text-[#8b9d77]">PSO POL Archives</a>
+                  </div>
                 </div>
               </div>
 

@@ -29,16 +29,19 @@ import { RoutesView } from './components/views/RoutesView';
 import { FuelLogView } from './components/views/FuelLogView';
 import { VerifyView } from './components/views/VerifyView';
 import { SplashScreen } from './components/SplashScreen';
+import { AuthModal } from './components/AuthModal';
 
 export default function App() {
   const [lang, setLang] = useState<Language>('en');
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [showSplash, setShowSplash] = useState(true);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [role, setRole] = useState<UserRole>('owner');
   const [offlineQueue, setOfflineQueue] = useState<OfflineAction[]>([]);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [isOffline, setIsOffline] = useState(false);
+  const [showTopMenu, setShowTopMenu] = useState(false);
 
   // Stored state
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -92,14 +95,15 @@ export default function App() {
     saveStoredOfflineQueue([]);
   };
 
-  // Gmail Auth simulation / mock
+  // Secure Auth with Role Selection upon sign up
   const handleSignIn = () => {
-    const email = window.prompt("Enter your Gmail address to sign in / sign up:", "driver@gmail.com");
-    if (email && email.toLowerCase().includes("@")) {
-      const formatted = email.trim();
-      setUserEmail(formatted);
-      localStorage.setItem('ah-gmail-user', formatted);
-    }
+    setShowAuthModal(true);
+  };
+
+  const handleAuthSuccess = (emailOrPhone: string, selectedRole: UserRole) => {
+    setUserEmail(emailOrPhone);
+    localStorage.setItem('ah-gmail-user', emailOrPhone);
+    handleRoleChange(selectedRole);
   };
 
   const handleSignOut = () => {
@@ -227,7 +231,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fdfbf7] text-[#4a4a35] flex flex-col font-sans pb-16 md:pb-0">
+    <div className="min-h-screen bg-[#fdfbf7] text-[#4a4a35] flex flex-col font-sans">
       {showSplash && (
         <SplashScreen
           onDismiss={() => setShowSplash(false)}
@@ -252,13 +256,19 @@ export default function App() {
         isOffline={isOffline}
         onToggleOffline={handleToggleOffline}
         onSyncOffline={handleSyncOffline}
+        isDashboard={activeTab === 'home'}
+        showTopMenuExternal={showTopMenu}
+        onOpenTopMenu={() => setShowTopMenu(true)}
+        onCloseTopMenu={() => setShowTopMenu(false)}
       />
 
-      <Navigation
-        activeTab={activeTab}
-        onSelectTab={setActiveTab}
-        lang={lang}
-      />
+      {activeTab !== 'home' && (
+        <Navigation
+          activeTab={activeTab}
+          onSelectTab={setActiveTab}
+          lang={lang}
+        />
+      )}
 
       <main className="flex-1 flex flex-col w-full">
         {activeTab === 'home' && (
@@ -268,6 +278,7 @@ export default function App() {
             vehicles={vehicles}
             drivers={drivers}
             onNavigate={setActiveTab}
+            onOpenMenu={() => setShowTopMenu(true)}
           />
         )}
 
@@ -279,6 +290,7 @@ export default function App() {
             onDeleteTrip={handleDeleteTrip}
             onClearAllTrips={handleClearAllTrips}
             initialMileage={selectedMileage}
+            onNavigate={setActiveTab}
           />
         )}
 
@@ -325,6 +337,13 @@ export default function App() {
       </main>
 
       <Footer />
+
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+        lang={lang}
+      />
     </div>
   );
 }
