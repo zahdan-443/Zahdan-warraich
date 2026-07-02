@@ -295,112 +295,112 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
       <div className="lg:col-span-7 flex flex-col gap-8">
         
         {/* First Section: 2 Rows of 3 Operational & Portal Buttons */}
-        <div className="bg-white p-5 sm:p-7 rounded-[36px] shadow-sm border border-[#ecece0]">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5">
-            {/* Row 1, Button 1: Safar Diary */}
-            <button
-              onClick={() => setShowSafarDiaryModal(true)}
-              className="p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
-            >
-              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <BookOpen className="w-5 h-5 text-[#8b9d77]" />
-              </div>
-              <div>
-                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
-                  {lang === 'ur' ? 'سفر ڈائری' : 'Safar Diary'}
-                </div>
-                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
-                  {lang === 'ur' ? 'روزانہ ٹرپ اور اخراجات کا ریکارڈ' : 'Daily trip & expense logs'}
-                </div>
-              </div>
-            </button>
-
-            {/* Row 1, Button 2: Quick Operations */}
-            <button
-              onClick={() => setShowQuickOpsModal(true)}
-              className="p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
-            >
-              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <Wrench className="w-5 h-5 text-[#8b9d77]" />
-              </div>
-              <div>
-                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
-                  {lang === 'ur' ? 'کوئیک آپریشنز' : 'Quick Operations'}
-                </div>
-                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
-                  {lang === 'ur' ? 'گاڑیاں، ڈرائیورز اور پورٹلز' : 'Fleet tools & portal shortcuts'}
-                </div>
-              </div>
-            </button>
-
-            {/* Row 1, Button 3: Trip Calculator */}
+        <div className="bg-white p-4 sm:p-7 rounded-[36px] shadow-sm border border-[#ecece0]">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3.5">
+            {/* Row 1, Button 1: Trip Calculator */}
             <button
               onClick={() => onNavigate('calculator')}
-              className="p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
+              className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
             >
-              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <Calculator className="w-5 h-5 text-[#8b9d77]" />
+              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <Calculator className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
               </div>
-              <div>
-                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
-                  {lang === 'ur' ? 'سفر اور فیول کیلکولیٹر' : 'Trip Calculator'}
+              <div className="min-w-0">
+                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
+                  {lang === 'ur' ? 'سفر کیلکولیٹر' : 'Trip Calculator'}
                 </div>
-                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
                   {lang === 'ur' ? 'کرایہ اور فیول منافع کا تخمینہ' : 'Freight cost & profit estimate'}
                 </div>
               </div>
             </button>
 
-            {/* Row 2, Button 1: Vehicles Verification */}
+            {/* Row 1, Button 2: Vehicles Verification */}
             <button
               onClick={() => onNavigate('verify')}
-              className="p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
+              className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
             >
-              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <Truck className="w-5 h-5 text-[#8b9d77]" />
+              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
               </div>
-              <div>
-                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
+              <div className="min-w-0">
+                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
                   {lang === 'ur' ? 'گاڑیوں کی تصدیق' : 'Vehicles Verification'}
                 </div>
-                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
                   {lang === 'ur' ? 'MTMIS پنجاب و ایکسائز ریکارڈ' : 'MTMIS Punjab & Excise portal'}
                 </div>
               </div>
             </button>
 
-            {/* Row 2, Button 2: License Verification */}
+            {/* Row 1, Button 3: License Verification */}
             <button
               onClick={() => onNavigate('verify')}
-              className="p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
+              className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
             >
-              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <ShieldCheck className="w-5 h-5 text-[#8b9d77]" />
+              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
               </div>
-              <div>
-                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
+              <div className="min-w-0">
+                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
                   {lang === 'ur' ? 'لائسنس کی تصدیق' : 'License Verification'}
                 </div>
-                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
                   {lang === 'ur' ? 'DLIMS پنجاب و موٹروے پولیس' : 'DLIMS Punjab Highway checks'}
                 </div>
               </div>
             </button>
 
-            {/* Row 2, Button 3: E-Challan Check */}
+            {/* Row 2, Button 1: E-Challan Check */}
             <button
               onClick={() => onNavigate('verify')}
-              className="p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-3xl transition-all active:scale-95 cursor-pointer flex items-center gap-3 shadow-2xs group text-left"
+              className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
             >
-              <div className="p-2.5 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                <AlertTriangle className="w-5 h-5 text-[#8b9d77]" />
+              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
               </div>
-              <div>
-                <div className="font-serif font-bold text-sm sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77]">
+              <div className="min-w-0">
+                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
                   {lang === 'ur' ? 'ای چالان چیک کریں' : 'E-Challan Check'}
                 </div>
-                <div className="text-[10px] sm:text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight">
+                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
                   {lang === 'ur' ? 'PSCA سیف سٹی چالان ریکارڈ' : 'PSCA Safe City traffic records'}
+                </div>
+              </div>
+            </button>
+
+            {/* Row 2, Button 2: Safar Diary */}
+            <button
+              onClick={() => setShowSafarDiaryModal(true)}
+              className="p-2.5 sm:p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
+            >
+              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
+              </div>
+              <div className="min-w-0">
+                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
+                  {lang === 'ur' ? 'سفر ڈائری' : 'Safar Diary'}
+                </div>
+                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
+                  {lang === 'ur' ? 'روزانہ ٹرپ اور اخراجات کا ریکارڈ' : 'Daily trip & expense logs'}
+                </div>
+              </div>
+            </button>
+
+            {/* Row 2, Button 3: Quick Operations */}
+            <button
+              onClick={() => setShowQuickOpsModal(true)}
+              className="p-2.5 sm:p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
+            >
+              <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
+                <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
+              </div>
+              <div className="min-w-0">
+                <div className="font-serif font-bold text-[11px] sm:text-base text-[#4a4a35] group-hover:text-[#8b9d77] leading-tight line-clamp-1">
+                  {lang === 'ur' ? 'کوئیک آپریشنز' : 'Quick Operations'}
+                </div>
+                <div className="hidden sm:block text-[11px] text-[#8e8e75] font-sans mt-0.5 leading-tight line-clamp-1">
+                  {lang === 'ur' ? 'گاڑیاں، ڈرائیورز اور پورٹلز' : 'Fleet tools & portal shortcuts'}
                 </div>
               </div>
             </button>

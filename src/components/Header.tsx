@@ -48,6 +48,22 @@ export const Header: React.FC<HeaderProps> = ({
   const [internalShowTopMenu, setInternalShowTopMenu] = useState(false);
   const [themePref, setThemePref] = useState<'light' | 'dark' | 'system'>('light');
 
+  React.useEffect(() => {
+    const root = document.documentElement;
+    if (themePref === 'dark') {
+      root.classList.add('dark');
+    } else if (themePref === 'light') {
+      root.classList.remove('dark');
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark) {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    }
+  }, [themePref]);
+
   const isMenuOpen = showTopMenuExternal !== undefined ? showTopMenuExternal : internalShowTopMenu;
   const handleOpenMenu = () => {
     if (onOpenTopMenu) onOpenTopMenu();
@@ -70,121 +86,38 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="min-h-[72px] py-2 px-3 sm:px-6 md:px-10 flex flex-wrap items-center justify-between gap-2 border-b border-[#e2e2d5] bg-[#fdfbf7] sticky top-0 z-50 transition-all shadow-2xs">
-        <div className="flex items-center gap-3 max-w-full">
+      <header className="min-h-[72px] py-2.5 px-4 sm:px-6 md:px-10 flex items-center justify-between border-b border-[#e2e2d5] bg-[#fdfbf7] sticky top-0 z-50 transition-all shadow-2xs">
+        <div className="flex items-center gap-3 w-full">
           <button
             onClick={handleOpenMenu}
-            className="flex items-center gap-2.5 sm:gap-3 p-1.5 -ml-1.5 rounded-2xl hover:bg-[#f0f0e4]/80 transition-all cursor-pointer group text-left max-w-full"
+            className="flex items-center gap-3 p-1.5 -ml-1.5 rounded-2xl hover:bg-[#f0f0e4]/80 transition-all cursor-pointer group text-left w-full"
             title={lang === 'ur' ? "سیٹنگز اور کنٹرول مینیو کھولیں" : "Click to open System Menu (Language, Notifications, Login, Themes)"}
           >
-            <div className="p-1.5 sm:p-2 bg-white border border-[#ecece0] group-hover:border-[#8b9d77] rounded-xl shadow-2xs text-[#5a5a40] shrink-0">
-              <Menu className="w-4 h-4 sm:w-5 sm:h-5 text-[#8b9d77]" />
+            <div className="p-2 bg-white border border-[#ecece0] group-hover:border-[#8b9d77] rounded-xl shadow-2xs text-[#5a5a40] shrink-0">
+              <Menu className="w-5 h-5 text-[#8b9d77]" />
             </div>
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shadow-sm select-none shrink-0 bg-white border border-[#c59b27]/60 overflow-hidden">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shadow-sm select-none shrink-0 bg-white border border-[#c59b27]/60 overflow-hidden">
               {!logoErr ? (
                 <img src="logo.png" alt="Logo" className="w-full h-full object-contain p-0.5" onError={() => setLogoErr(true)} />
               ) : (
-                <AlHadiLogo className="w-9 h-9 sm:w-11 sm:h-11" />
+                <AlHadiLogo className="w-10 h-10 sm:w-11 sm:h-11" />
               )}
             </div>
-            <div className="flex flex-col justify-center min-w-0">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 leading-tight">
-                <span className="text-xs sm:text-sm md:text-base font-serif font-bold tracking-tight text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors whitespace-nowrap">
+            <div className="flex flex-col justify-center min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 leading-tight">
+                <span className="text-sm sm:text-base md:text-lg font-serif font-bold tracking-tight text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors whitespace-nowrap">
                   Al-Hadi Goods Samundri
                 </span>
                 <span className="hidden sm:inline text-gray-300">|</span>
-                <span className="text-xs sm:text-sm font-serif font-bold text-[#8b9d77] whitespace-nowrap">
+                <span className="text-sm sm:text-base font-serif font-bold text-[#8b9d77] whitespace-nowrap">
                   الھادی گڈز سمندری
                 </span>
               </div>
-              <p className="text-[9px] sm:text-[11px] text-[#8e8e75] font-sans font-medium mt-0.5 truncate max-w-[210px] xs:max-w-xs sm:max-w-md md:max-w-none">
+              <p className="text-[10px] sm:text-xs text-[#8e8e75] font-sans font-medium mt-0.5 truncate">
                 Official Cargo, Transport & Nationwide Logistics Fleet
               </p>
             </div>
           </button>
-        </div>
-
-        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 ml-auto">
-          {/* Offline Mode Sync Queue Indicator */}
-          <div className="flex items-center gap-1 bg-[#f0f0e4] p-1 rounded-full border border-[#ecece0] text-xs font-mono">
-            <button
-              onClick={onToggleOffline}
-              className={`px-2.5 py-1 rounded-full flex items-center gap-1.5 transition-colors cursor-pointer ${isOffline ? 'bg-[#EF4444] text-white shadow-xs' : 'text-[#5a5a40] hover:bg-white'}`}
-              title={isOffline ? "Simulated Offline Mode Active. Click to reconnect." : "Simulate Offline Mode (Network disconnection)"}
-            >
-              {isOffline ? <WifiOff className="w-3.5 h-3.5" /> : <Wifi className="w-3.5 h-3.5 text-[#10B981]" />}
-              <span className="hidden lg:inline text-[10px] uppercase font-bold">{isOffline ? 'Offline' : 'Online'}</span>
-            </button>
-            {offlineCount > 0 && (
-              <button
-                onClick={onSyncOffline}
-                className="px-2 py-1 rounded-full bg-[#EAB308] hover:bg-[#CA8A04] text-white flex items-center gap-1 animate-pulse cursor-pointer shadow-2xs"
-                title="Sync queued offline records to server"
-              >
-                <RefreshCw className="w-3 h-3 animate-spin" />
-                <span className="text-[10px] font-bold">{offlineCount}</span>
-              </button>
-            )}
-          </div>
-
-          {/* Firebase Push Notifications Bell */}
-          <div className="relative">
-            <button
-              onClick={() => setShowNotifs(!showNotifs)}
-              className="p-2 rounded-full border border-[#ecece0] bg-white hover:border-[#8b9d77] text-[#5a5a40] transition-colors cursor-pointer relative shadow-2xs"
-              title="Firebase Push Notifications"
-            >
-              <Bell className="w-4 h-4 text-[#4a4a35]" />
-              {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-bold flex items-center justify-center animate-bounce shadow-xs">
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-          </div>
-
-          {/* Language Toggle */}
-          <button
-            onClick={onToggleLang}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#ecece0] bg-white text-[#5a5a40] text-xs font-medium uppercase tracking-widest hover:border-[#8b9d77] hover:text-[#8b9d77] shadow-2xs transition-all cursor-pointer active:scale-95 shrink-0"
-            title="Toggle Language / Zubaan"
-          >
-            <Globe className="w-3.5 h-3.5 text-[#8b9d77]" />
-            <span className="font-bold text-[11px]">{lang === 'en' ? 'UR' : 'EN'}</span>
-          </button>
-
-          {/* Verified Account & Role Badge Display */}
-          {userEmail ? (
-            <div className="flex items-center gap-2 pl-2 border-l border-[#e2e2d5]">
-              <div className="flex flex-col text-right">
-                <div className="flex items-center justify-end gap-1.5">
-                  <span className="text-xs font-bold text-[#4a4a35] truncate max-w-[120px]">{userEmail}</span>
-                </div>
-                <div className="flex items-center justify-end gap-1 mt-0.5">
-                  <span className={`px-2 py-0.5 rounded-full border text-[9px] uppercase tracking-wider font-bold flex items-center gap-1 ${currentRoleObj.color}`}>
-                    {currentRoleObj.icon}
-                    <span>{role}</span>
-                  </span>
-                </div>
-              </div>
-              <button
-                onClick={onSignOut}
-                className="p-2.5 rounded-full bg-[#f0f0e4] hover:bg-[#e2e2d5] text-[#5a5a40] transition-colors cursor-pointer shadow-2xs"
-                title="Sign Out Account"
-              >
-                <LogOut className="w-4 h-4 text-[#dc2626]" />
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={onSignIn}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1e3a68] hover:bg-[#162a4d] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95 shrink-0"
-              title="Secure Data & Select Role"
-            >
-              <Shield className="w-3.5 h-3.5 text-[#8b9d77]" />
-              <span className="text-[11px]">{lang === 'ur' ? 'لاگ ان کریں' : 'Secure Login'}</span>
-            </button>
-          )}
         </div>
       </header>
 

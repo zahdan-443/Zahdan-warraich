@@ -40,3 +40,61 @@ html, body, #root {
   scrollbar-width: none;  /* Firefox */
 }
 
+/* Dark Mode Theme Overrides */
+html.dark {
+  --color-nat-bg: #161713;
+  --color-nat-text: #e2e2d5;
+  --color-nat-surface: #20211a;
+  --color-nat-surface-subtle: #2b2c23;
+  --color-nat-surface-soft: #25261e;
+  --color-nat-border: #36372c;
+  --color-nat-border-dark: #434437;
+  --color-nat-muted: #a3a48e;
+}
+
+html.dark body {
+  background-color: #161713;
+  color: #e2e2d5;
+}
+
+html.dark .bg-white {
+  background-color: #20211a !important;
+  color: #e2e2d5 !important;
+}
+
+html.dark .bg-\[\#fdfbf7\] {
+  background-color: #161713 !important;
+  color: #e2e2d5 !important;
+}
+
+html.dark .bg-\[\#f9f9f2\] {
+  background-color: #25261e !important;
+  color: #e2e2d5 !important;
+}
+
+html.dark .bg-\[\#f0f0e4\] {
+  background-color: #2b2c23 !important;
+  color: #e2e2d5 !important;
+}
+
+html.dark .border-\[\#ecece0\] {
+  border-color: #36372c !important;
+}
+
+html.dark .border-\[\#e2e2d5\] {
+  border-color: #434437 !important;
+}
+
+html.dark .text-\[\#4a4a35\] {
+  color: #f2f2e8 !important;
+}
+
+html.dark .text-\[\#5a5a40\] {
+  color: #e2e2d5 !important;
+}
+
+html.dark .text-\[\#8e8e75\] {
+  color: #b0b19b !important;
+}
+
+
