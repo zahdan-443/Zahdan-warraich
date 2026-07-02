@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ActiveTab, Driver, FuelLogItem, Language, RoutePreset, Trip, Vehicle, AppNotification, OfflineAction, UserRole } from './types';
 import {
   getStoredDrivers,
@@ -52,6 +52,64 @@ export default function App() {
 
   // Selected mileage passed from Vehicles to Trip Cost
   const [selectedMileage, setSelectedMileage] = useState<number | undefined>(undefined);
+
+  const lastBackPressTime = useRef(0);
+  const [exitToast, setExitToast] = useState(false);
+
+  useEffect(() => {
+    window.history.replaceState({ tab: 'home' }, '');
+    window.history.pushState({ tab: 'home' }, '');
+  }, []);
+
+  const handleNavigate = (newTab: ActiveTab) => {
+    if (newTab !== activeTab) {
+      window.history.pushState({ tab: newTab }, '');
+      setActiveTab(newTab);
+    }
+  };
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (showTopMenu) {
+        setShowTopMenu(false);
+        window.history.pushState({ tab: activeTab }, '');
+        return;
+      }
+      if (showAuthModal) {
+        setShowAuthModal(false);
+        window.history.pushState({ tab: activeTab }, '');
+        return;
+      }
+
+      const customEvent = new CustomEvent('app-back-button', { cancelable: true });
+      const canceled = !window.dispatchEvent(customEvent);
+      if (canceled) {
+        window.history.pushState({ tab: activeTab }, '');
+        return;
+      }
+
+      if (activeTab !== 'home') {
+        const targetTab = e.state?.tab || 'home';
+        setActiveTab(targetTab);
+        if (targetTab === 'home') {
+          window.history.pushState({ tab: 'home' }, '');
+        }
+      } else {
+        const now = Date.now();
+        if (now - lastBackPressTime.current < 2000) {
+          // Allow exit on 2nd back press within 2 seconds
+        } else {
+          lastBackPressTime.current = now;
+          window.history.pushState({ tab: 'home' }, '');
+          setExitToast(true);
+          setTimeout(() => setExitToast(false), 2500);
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [activeTab, showTopMenu, showAuthModal]);
 
   // Load from storage on mount
   useEffect(() => {
@@ -213,7 +271,7 @@ export default function App() {
 
   const handleApplyRoute = (route: RoutePreset) => {
     // Navigate to calculator
-    setActiveTab('calculator');
+    handleNavigate('calculator');
   };
 
   // Handlers for Fuel Log
@@ -231,12 +289,12 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fdfbf7] text-[#4a4a35] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#fdfbf7] text-[#4a4a35] flex flex-col font-sans relative">
       {showSplash && (
         <SplashScreen
           onDismiss={() => setShowSplash(false)}
           onSelectTab={(tab) => {
-            setActiveTab(tab);
+            handleNavigate(tab);
             setShowSplash(false);
           }}
         />
@@ -258,14 +316,17 @@ export default function App() {
         onSyncOffline={handleSyncOffline}
         isDashboard={activeTab === 'home'}
         showTopMenuExternal={showTopMenu}
-        onOpenTopMenu={() => setShowTopMenu(true)}
+        onOpenTopMenu={() => {
+          window.history.pushState({ modal: true }, '');
+          setShowTopMenu(true);
+        }}
         onCloseTopMenu={() => setShowTopMenu(false)}
       />
 
       {activeTab !== 'home' && (
         <Navigation
           activeTab={activeTab}
-          onSelectTab={setActiveTab}
+          onSelectTab={handleNavigate}
           lang={lang}
         />
       )}
@@ -277,8 +338,11 @@ export default function App() {
             trips={trips}
             vehicles={vehicles}
             drivers={drivers}
-            onNavigate={setActiveTab}
-            onOpenMenu={() => setShowTopMenu(true)}
+            onNavigate={handleNavigate}
+            onOpenMenu={() => {
+              window.history.pushState({ modal: true }, '');
+              setShowTopMenu(true);
+            }}
           />
         )}
 
@@ -290,7 +354,7 @@ export default function App() {
             onDeleteTrip={handleDeleteTrip}
             onClearAllTrips={handleClearAllTrips}
             initialMileage={selectedMileage}
-            onNavigate={setActiveTab}
+            onNavigate={handleNavigate}
           />
         )}
 
@@ -344,6 +408,12 @@ export default function App() {
         onSuccess={handleAuthSuccess}
         lang={lang}
       />
+
+      {exitToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-[#4a4a35] text-white rounded-full text-xs font-bold shadow-xl border border-[#8b9d77] animate-bounce">
+          {lang === 'ur' ? 'ایپ بند کرنے کے لئے دوبارہ بیک دبائیں' : 'Press back again within 2 seconds to exit app'}
+        </div>
+      )}
     </div>
   );
 }

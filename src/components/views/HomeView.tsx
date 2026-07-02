@@ -68,6 +68,31 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
   const [newEventType, setNewEventType] = useState<'load' | 'maintenance' | 'dispatch' | 'other'>('load');
 
   useEffect(() => {
+    const handleBack = (e: Event) => {
+      if (showSafarDiaryModal) {
+        setShowSafarDiaryModal(false);
+        e.preventDefault();
+      } else if (showQuickOpsModal) {
+        setShowQuickOpsModal(false);
+        e.preventDefault();
+      } else if (showRecentLogs) {
+        setShowRecentLogs(false);
+        e.preventDefault();
+      } else if (showAddEvent) {
+        setShowAddEvent(false);
+        e.preventDefault();
+      }
+    };
+    window.addEventListener('app-back-button', handleBack);
+    return () => window.removeEventListener('app-back-button', handleBack);
+  }, [showSafarDiaryModal, showQuickOpsModal, showRecentLogs, showAddEvent]);
+
+  const openModalWithHistory = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
+    window.history.pushState({ modal: true }, '');
+    setter(true);
+  };
+
+  useEffect(() => {
     const stored = localStorage.getItem('ah-calendar-events');
     if (stored) {
       setEvents(JSON.parse(stored));
@@ -317,7 +342,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
 
             {/* Row 1, Button 2: Vehicles Verification */}
             <button
-              onClick={() => onNavigate('verify')}
+              onClick={() => window.open('https://mtmis.excise.punjab.gov.pk/', '_blank', 'noopener,noreferrer')}
               className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
             >
               <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
@@ -335,7 +360,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
 
             {/* Row 1, Button 3: License Verification */}
             <button
-              onClick={() => onNavigate('verify')}
+              onClick={() => window.open('https://dlims.punjab.gov.pk/verify', '_blank', 'noopener,noreferrer')}
               className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
             >
               <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
@@ -353,7 +378,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
 
             {/* Row 2, Button 1: E-Challan Check */}
             <button
-              onClick={() => onNavigate('verify')}
+              onClick={() => window.open('https://echallan.psca.gop.pk/', '_blank', 'noopener,noreferrer')}
               className="p-2.5 sm:p-4 bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
             >
               <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
@@ -371,7 +396,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
 
             {/* Row 2, Button 2: Safar Diary */}
             <button
-              onClick={() => setShowSafarDiaryModal(true)}
+              onClick={() => openModalWithHistory(setShowSafarDiaryModal)}
               className="p-2.5 sm:p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
             >
               <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
@@ -389,7 +414,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
 
             {/* Row 2, Button 3: Quick Operations */}
             <button
-              onClick={() => setShowQuickOpsModal(true)}
+              onClick={() => openModalWithHistory(setShowQuickOpsModal)}
               className="p-2.5 sm:p-4 bg-[#fdfbf7] border-2 border-[#8b9d77]/40 hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 rounded-2xl sm:rounded-3xl transition-all active:scale-95 cursor-pointer flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 shadow-2xs group text-center sm:text-left"
             >
               <div className="p-2 sm:p-2.5 bg-white rounded-xl sm:rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
@@ -790,42 +815,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
             </header>
 
             {/* Quick Operations Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               
-              {/* Open Recent Logs Button inside Quick Operations as requested */}
-              <button
-                type="button"
-                onClick={() => {
-                  setShowQuickOpsModal(false);
-                  setShowSafarDiaryModal(true);
-                }}
-                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
-              >
-                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                  <History className="w-6 h-6 text-[#8b9d77]" />
-                </div>
-                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
-                  {lang === 'ur' ? 'حالیہ لاگز کھولیں' : 'Open Recent Logs'}
-                </span>
-              </button>
-
-              {/* Calculator */}
-              <button
-                type="button"
-                onClick={() => {
-                  setShowQuickOpsModal(false);
-                  onNavigate('calculator');
-                }}
-                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#8b9d77] hover:bg-[#8b9d77]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
-              >
-                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#8b9d77] shadow-2xs shrink-0">
-                  <Calculator className="w-6 h-6 text-[#8b9d77]" />
-                </div>
-                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
-                  {lang === 'ur' ? 'سفر اور فیول کیلکولیٹر' : 'Trip Calculator'}
-                </span>
-              </button>
-
               {/* Vehicles */}
               <button
                 type="button"
@@ -891,48 +882,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ lang, trips, vehicles, drive
                 </div>
                 <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#8b9d77] transition-colors">
                   {lang === 'ur' ? 'فیول لاگ ریکارڈ' : 'Fuel Consumption'}
-                </span>
-              </button>
-
-              {/* Vehicle Verification */}
-              <button
-                type="button"
-                onClick={() => window.open('https://mtmis.excise.punjab.gov.pk', '_blank', 'noopener,noreferrer')}
-                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#3B82F6] hover:bg-[#3B82F6]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
-              >
-                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#3B82F6] shadow-2xs shrink-0">
-                  <ShieldCheck className="w-6 h-6 text-[#3B82F6]" />
-                </div>
-                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#3B82F6] transition-colors">
-                  {lang === 'ur' ? 'گاڑیوں کی تصدیق (MTMIS)' : 'Verify Vehicle'}
-                </span>
-              </button>
-
-              {/* License Verification */}
-              <button
-                type="button"
-                onClick={() => window.open('https://dlims.punjab.gov.pk', '_blank', 'noopener,noreferrer')}
-                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#10B981] hover:bg-[#10B981]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95"
-              >
-                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#10B981] shadow-2xs shrink-0">
-                  <CreditCard className="w-6 h-6 text-[#10B981]" />
-                </div>
-                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#10B981] transition-colors">
-                  {lang === 'ur' ? 'لائسنس تصدیق (DLIMS)' : 'Verify License'}
-                </span>
-              </button>
-
-              {/* Check E-Challan */}
-              <button
-                type="button"
-                onClick={() => window.open('https://echallan.psca.gop.pk', '_blank', 'noopener,noreferrer')}
-                className="p-5 rounded-3xl bg-[#fdfbf7] border border-[#ecece0] hover:border-[#EF4444] hover:bg-[#EF4444]/10 transition-all cursor-pointer group flex flex-col items-center justify-center text-center gap-2.5 shadow-2xs active:scale-95 sm:col-span-1 md:col-span-2"
-              >
-                <div className="p-3 bg-white rounded-2xl border border-[#ecece0] group-hover:border-[#EF4444] shadow-2xs shrink-0">
-                  <FileText className="w-6 h-6 text-[#EF4444]" />
-                </div>
-                <span className="font-serif font-bold text-xs text-[#4a4a35] group-hover:text-[#EF4444] transition-colors">
-                  {lang === 'ur' ? 'ای چالان چیک کریں (PSCA)' : 'Check E-Challan'}
                 </span>
               </button>
 
